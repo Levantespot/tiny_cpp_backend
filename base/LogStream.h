@@ -4,6 +4,7 @@
 #include "noncopyable.h"
 // #include <vector>
 #include <string>
+#include <sstream> // stringstream
 #include <cstring> // memcpy
 
 namespace TCB
@@ -36,18 +37,27 @@ public:
 
 class LogStream : noncopyable
 {
-    using Buffer = FixedBuffer<kSmallBuffer>;
-private:
-    Buffer buffer_;
 public:
-    // 以性能为代价，直接用模板和 to_string 偷懒
-    template<typename T> LogStream& operator<<(T); 
+    using Buffer = FixedBuffer<kSmallBuffer>;
+
     void append(const char* buf, size_t len) { buffer_.append(buf, len); }
     void resetBuffer() { buffer_.reset(); }
     const Buffer& get_buffer() const { return buffer_; } // only for debug
+
+    // 负责算术类型的写入
+    template<typename T> LogStream& operator<<(T v);
+    // 负责单个字符的写入
+    LogStream& operator<<(char);
+    // 负责 c 风格字符串指针的写入
+    LogStream& operator<<(const char*);
+    // 负责字符串的写入
+    LogStream& operator<<(const std::string&);
+    // 负责 Buffer 的写入
+    LogStream& operator<<(const Buffer&);
+private:
+    Buffer buffer_;
+    static const int kMaxNumericSize = 48;
 };
-
-
 
 } // namespace TCB
 
