@@ -98,6 +98,10 @@ void Logger::setFlush(FlushFunc flush) {
     g_flush = flush;
 }
 
+Logger::LogLevel g_logLevel = Logger::LogLevel::INFO;
+Logger::LogLevel Logger::logLevel() { return g_logLevel; }
+void Logger::set_logLevel(Logger::LogLevel level) { g_logLevel = level; }
+
 // -------------- Logger Ends --------------
 
 } // namespace TCB

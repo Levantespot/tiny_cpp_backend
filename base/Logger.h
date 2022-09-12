@@ -24,6 +24,12 @@ public:
         NUM_LOG_LEVELS,
     };
 
+    
+    // 返回日志等级
+    static LogLevel logLevel();
+    // 设置日志等级
+    static void set_logLevel(LogLevel level);
+
     // compile time calculation of basename of source file
     class SourceFile
     {
@@ -85,14 +91,28 @@ LogStream& operator<<(LogStream& s, const Logger::SourceFile& v) {
     s.append(v.get_data(), v.size());
     return s;
 }
+
 // 定义一系列宏，方便直接调用
-#define LOG_TRACE TCB::Logger(__FILE__, __LINE__, TCB::Logger::TRACE, __func__).stream()
-#define LOG_DEBUG TCB::Logger(__FILE__, __LINE__, TCB::Logger::DEBUG, __func__).stream()
-#define LOG_INFO TCB::Logger(__FILE__, __LINE__).stream()
+// LOG_TRACE, LOG_DEBUG, LOG_INFO 受日志等级控制，低于日志等级的日志会被忽略
+
+// 开发日志
+#define LOG_TRACE if (TCB::Logger::logLevel() <= TCB::Logger::TRACE) \
+    TCB::Logger(__FILE__, __LINE__, TCB::Logger::TRACE, __func__).stream()
+// 调试日志
+#define LOG_DEBUG if (TCB::Logger::logLevel() <= TCB::Logger::DEBUG) \
+    TCB::Logger(__FILE__, __LINE__, TCB::Logger::DEBUG, __func__).stream()
+// 运行日志
+#define LOG_INFO if (TCB::Logger::logLevel() <= TCB::Logger::INFO) \
+    TCB::Logger(__FILE__, __LINE__).stream()
+// 警告日志
 #define LOG_WARN TCB::Logger(__FILE__, __LINE__, TCB::Logger::WARN).stream()
+// 错误日志（继续运行）
 #define LOG_ERROR TCB::Logger(__FILE__, __LINE__, TCB::Logger::ERROR).stream()
+// 错误日志（强行退出）
 #define LOG_FATAL TCB::Logger(__FILE__, __LINE__, TCB::Logger::FATAL).stream()
+// 错误日志，并输出 错误日志（继续运行）
 #define LOG_SYSERR TCB::Logger(__FILE__, __LINE__, false).stream()
+// 错误日志，并输出 errono（强行退出）
 #define LOG_SYSFATAL TCB::Logger(__FILE__, __LINE__, true).stream()
 
 } // namespace TCB
