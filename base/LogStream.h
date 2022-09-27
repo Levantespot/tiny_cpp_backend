@@ -45,7 +45,13 @@ public:
     const Buffer& get_buffer() const { return buffer_; } // only for debug
 
     // 负责算术类型的写入
-    template<typename T> LogStream& operator<<(T v);
+    template<typename T> LogStream& operator<<(T v) {
+        std::stringstream strm;
+        strm << v;
+        std::string s(strm.str());
+        buffer_.append(s.c_str(), s.size());
+        return *this;
+    }
     // 负责单个字符的写入
     LogStream& operator<<(char);
     // 负责 c 风格字符串指针的写入

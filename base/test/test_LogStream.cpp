@@ -1,4 +1,4 @@
-#include "../LogStream.cpp"
+#include "../LogStream.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -36,7 +36,7 @@ int main() {
     const char* s = l.get_buffer().get_data();
     size_t size = l.get_buffer().size();
 
-    for (int i = 0; i < size+1; i++) {
+    for (size_t i = 0; i < size+1; i++) {
         std::cout << s[i] ;
     }
     std::cout << std::endl;

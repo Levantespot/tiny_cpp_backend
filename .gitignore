@@ -31,5 +31,9 @@
 *.out
 *.app
 
+# Temporary folders
 .vscode/*
 test/*
+
+# Build foloders
+base/test/build/*

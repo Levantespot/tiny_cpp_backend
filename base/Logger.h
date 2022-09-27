@@ -12,9 +12,9 @@ namespace TCB
 
 class Logger
 {   
+/* ------- 日志等级 -------*/
 public:
-    enum LogLevel
-    {
+    enum LogLevel {
         TRACE,
         DEBUG,
         INFO,
@@ -23,53 +23,43 @@ public:
         FATAL,
         NUM_LOG_LEVELS,
     };
-
-    
     // 返回日志等级
     static LogLevel logLevel();
     // 设置日志等级
     static void set_logLevel(LogLevel level);
+private:
+    static LogLevel g_logLevel;
 
-    // compile time calculation of basename of source file
+/* ------- 辅助类 -------*/
+public:
+    // 构造时输入文件路径，得到文件名
+    // 结合宏，可以在编译时就获得调用日志库的文件的文件名
     class SourceFile
     {
     private:
         const char* data_;
         size_t size_;
     public:
-        template<size_t N> SourceFile(const char (&arr)[N]);
+        template<size_t N> SourceFile(const char (&arr)[N]) : data_(arr), size_(N-1) {
+            const char* slash = strrchr(data_, '/');
+            if (slash)
+            {
+                data_ = slash + 1;
+                size_ -= data_ - arr;
+            }
+        }
         explicit SourceFile(const char* filename);
         SourceFile(const SourceFile &) = default;
         
         const char* get_data() const { return data_; }
         const size_t size() const { return size_; }
     }; // class Source File
-
-    Logger(SourceFile file, int line);
-    Logger(SourceFile file, int line, LogLevel level);
-    Logger(SourceFile file, int line, LogLevel level, const char* func);
-    Logger(SourceFile file, int line, bool toAbort);
-    // 析构的时候负责把所有信息按格式输出
-    ~Logger();
-
-    // Internal usage only!
-    LogStream& stream() { return impl_.stream_; }
-
-    // 输出函数的函数类型
-    using OutputFunc = void (*)(const char* msg, int len);
-    // 刷缓存函数的函数类型
-    using FlushFunc = void (*)();
-    // 设置输出函数的入口
-    static void setOutput(OutputFunc);
-    // 设置刷缓存函数的入口
-    static void setFlush(FlushFunc);
-    // static void setTimeZone(const TimeZone& tz);
-
 private:
+    // 封装格式化日志信息的类
     class Impl
     {
     public:
-        // Impl() = delete;
+        Impl() = delete;
         // 构造的同时，写入事件、线程id、日志级别，错误信息（如果有的话）。
         Impl(LogLevel level, int savedErrno, const SourceFile& file, int line);
         // 最后写入文件名和行号
@@ -81,16 +71,38 @@ private:
         int line_;
         SourceFile basename_;
     };
-
     Impl impl_;
+public:
+    // Internal usage only!
+    LogStream& stream() { return impl_.stream_; }
+
+/* ------- 构造析构 -------*/
+public:
+    Logger(SourceFile file, int line);
+    Logger(SourceFile file, int line, LogLevel level);
+    Logger(SourceFile file, int line, LogLevel level, const char* func);
+    Logger(SourceFile file, int line, bool toAbort);
+    // 析构的时候负责把所有信息按格式输出
+    ~Logger();
+
+/* ------- 输出 & 刷缓存 -------*/
+public:
+    // 输出函数的函数类型
+    using OutputFunc = void (*)(const char* msg, int len);
+    // 刷缓存函数的函数类型
+    using FlushFunc = void (*)();
+    // 设置输出函数的入口，设置为静态成员方便共享
+    static void setOutput(OutputFunc);
+    // 设置刷缓存函数的入口，设置为静态成员方便共享
+    static void setFlush(FlushFunc);
+private:
+    static OutputFunc g_output;
+    static FlushFunc g_flush;
     
 }; // class Logger
 
 // 给 LogStream 增加一个写入 SourceFile 类型的操作
-LogStream& operator<<(LogStream& s, const Logger::SourceFile& v) {
-    s.append(v.get_data(), v.size());
-    return s;
-}
+LogStream& operator<<(LogStream& s, const Logger::SourceFile& v);
 
 // 定义一系列宏，方便直接调用
 // LOG_TRACE, LOG_DEBUG, LOG_INFO 受日志等级控制，低于日志等级的日志会被忽略

@@ -1,6 +1,4 @@
-#include "../Logger.cpp"
-#include "../LogStream.cpp"
-#include "../Timestamp.cpp"
+#include "../Logger.h"
 #include <iostream>
 
 int main() {

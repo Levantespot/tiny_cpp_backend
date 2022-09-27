@@ -1,5 +1,5 @@
-#include "../Timestamp.cpp"
-#include "../LogStream.h"
+#include "../Timestamp.h"
+// #include "../LogStream.h"
 #include <unistd.h> // sleep
 #include <iostream>
 

@@ -5,15 +5,15 @@ namespace TCB
 
 // -------------- Logger::SourceFile Starts --------------
 
-template<size_t N>
-Logger::SourceFile::SourceFile(const char (&arr)[N]) : data_(arr), size_(N-1) {
-    const char* slash = strrchr(data_, '/');
-    if (slash)
-    {
-        data_ = slash + 1;
-        size_ -= data_ - arr;
-    }
-}
+// template<size_t N>
+// Logger::SourceFile::SourceFile(const char (&arr)[N]) : data_(arr), size_(N-1) {
+//     const char* slash = strrchr(data_, '/');
+//     if (slash)
+//     {
+//         data_ = slash + 1;
+//         size_ -= data_ - arr;
+//     }
+// }
 
 Logger::SourceFile::SourceFile(const char* filename) : data_(filename) {
     const char* slash = strrchr(filename, '/');
@@ -22,6 +22,11 @@ Logger::SourceFile::SourceFile(const char* filename) : data_(filename) {
         data_ = slash + 1;
     }
     size_ = strlen(data_);
+}
+
+LogStream& operator<<(LogStream& s, const Logger::SourceFile& v) {
+    s.append(v.get_data(), v.size());
+    return s;
 }
 // -------------- Logger::SourceFile Ends --------------
 
@@ -59,14 +64,14 @@ void Logger::Impl::finish() {
 // -------------- Logger Starts --------------
 void defaultOutput(const char* msg, int len)
 {
-  size_t n = fwrite(msg, 1, len, stdout);
+    fwrite(msg, 1, len, stdout);
 }
 void defaultFlush()
 {
-  fflush(stdout);
+    fflush(stdout);
 }
-Logger::OutputFunc g_output = defaultOutput;    // 由于非单例模式，因此需要设置为非成员变量
-Logger::FlushFunc g_flush = defaultFlush;       // 只需要修改一次后续的写日志也会生效
+Logger::OutputFunc Logger::g_output = defaultOutput;    // 静态成员函数，需要在类外初始化
+Logger::FlushFunc Logger::g_flush = defaultFlush;       
 
 Logger::Logger(SourceFile file, int line)
   : impl_(Logger::INFO, 0, file, line) {}
@@ -98,7 +103,7 @@ void Logger::setFlush(FlushFunc flush) {
     g_flush = flush;
 }
 
-Logger::LogLevel g_logLevel = Logger::LogLevel::INFO;
+Logger::LogLevel Logger::g_logLevel = Logger::LogLevel::INFO;
 Logger::LogLevel Logger::logLevel() { return g_logLevel; }
 void Logger::set_logLevel(Logger::LogLevel level) { g_logLevel = level; }
 

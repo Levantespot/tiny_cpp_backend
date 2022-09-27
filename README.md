@@ -12,5 +12,7 @@ TODO
     - [x] Impl: 将事件、Level、文件名等信息同用户传来的信息组合在一起；
     - [x] Logger: 暴露给用户的 API；
   - 后端
-    - [ ] PASS;
+    - [ ] FileUtil: 封装OS提供的文件读写操作接口，线程安全由上一层级调用者考虑；
+    - [ ] LogFile
+    - [ ] AsyncLogging
 - 网络库
