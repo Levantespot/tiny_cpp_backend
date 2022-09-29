@@ -48,7 +48,7 @@ public:
     template<typename T> LogStream& operator<<(T v) {
         std::stringstream strm;
         strm << v;
-        std::string s(strm.str());
+        const std::string &s(strm.str());
         buffer_.append(s.c_str(), s.size());
         return *this;
     }

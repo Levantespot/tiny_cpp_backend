@@ -1,5 +1,5 @@
 #include "LogStream.h"
-// #include <typeinfo> // typeid
+#include <iostream>
 
 using namespace TCB;
 
@@ -11,20 +11,14 @@ void FixedBuffer<SIZE>::append(const char* buf, size_t len) {
         memcpy(cur_, buf, len);
         cur_ += len;
     } else {
-        throw "TCB::FixedBuffer<SIZE>::append: out of space to append!";
+        std::cerr << "TCB::FixedBuffer<SIZE>::append: A log was "
+            "discarded since there is out of space in FixedBuffer!\n";
     }
 }
 // -------------- FixedBuffer Ends --------------
 
 // -------------- LogStream Starts --------------
 
-// template<typename T> LogStream& LogStream::operator<<(T v) {
-//     std::stringstream strm;
-//     strm << v;
-//     std::string s(strm.str());
-//     buffer_.append(s.c_str(), s.size());
-//     return *this;
-// }
 LogStream& LogStream::operator<<(char v) { 
     buffer_.append(&v, 1);
     return *this;

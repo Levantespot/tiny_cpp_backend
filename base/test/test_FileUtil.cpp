@@ -14,7 +14,7 @@ int main() {
     // af.append(s2, strlen(s2));
 
     /* multi thread */
-    // int size = 1000 * 1000 * 64;
+    // int size = 1000 * 1000;
     int size = 64;
     std::thread t1([&] {
         std::string s(size, 'a');

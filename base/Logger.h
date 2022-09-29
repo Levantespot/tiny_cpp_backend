@@ -6,7 +6,7 @@
 #include <thread> // this_thread::get_id
 #include <cstring> // strerror
 #include <cstdlib> // abort
-
+#include <functional>
 namespace TCB
 {
 
@@ -40,15 +40,15 @@ public:
         const char* data_;
         size_t size_;
     public:
-        template<size_t N> SourceFile(const char (&arr)[N]) : data_(arr), size_(N-1) {
-            const char* slash = strrchr(data_, '/');
-            if (slash)
-            {
-                data_ = slash + 1;
-                size_ -= data_ - arr;
-            }
-        }
-        explicit SourceFile(const char* filename);
+        // template<size_t N> SourceFile(const char (&arr)[N]) : data_(arr), size_(N-1) {
+        //     const char* slash = strrchr(data_, '/');
+        //     if (slash)
+        //     {
+        //         data_ = slash + 1;
+        //         size_ -= data_ - arr;
+        //     }
+        // }
+        SourceFile(const char* filename);
         SourceFile(const SourceFile &) = default;
         
         const char* get_data() const { return data_; }
@@ -88,9 +88,15 @@ public:
 /* ------- 输出 & 刷缓存 -------*/
 public:
     // 输出函数的函数类型
-    using OutputFunc = void (*)(const char* msg, int len);
+    // void test(const char* msg, size_t len);
+    // typedef std::function<void(const char* msg, size_t len)> OutputFunc1;
+    // static void setOutput(OutputFunc1);
+    // B b;
+    // setOutput(std::bind(&B::test,&b));
+
+    using OutputFunc = std::function<void (const char* msg, size_t len)>;
     // 刷缓存函数的函数类型
-    using FlushFunc = void (*)();
+    using FlushFunc = std::function<void ()>;
     // 设置输出函数的入口，设置为静态成员方便共享
     static void setOutput(OutputFunc);
     // 设置刷缓存函数的入口，设置为静态成员方便共享

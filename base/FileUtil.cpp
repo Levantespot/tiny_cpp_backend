@@ -1,14 +1,20 @@
 #include "FileUtil.h"
-#include <cassert> // assert
+// #include <cassert> // assert
+#include <exception>
 #include <cstring> // strerror
 
 namespace TCB
 {
+char FileUtil::AppendFile::buffer_[64 * 1024] = {0};
 
 FileUtil::AppendFile::AppendFile(const char* filename)
 : fp_(fopen(filename, "a")), written_bytes_(0)
 {
-    assert(fp_);
+    // assert(fp_);
+    if (fp_ == nullptr) {
+        int err = ferror(fp_);
+        fprintf(stderr, "AppendFile::AppendFile() failed %s\n", strerror(err));
+    }
     setbuffer(fp_, buffer_, sizeof(buffer_));
 }
 
@@ -46,6 +52,7 @@ void FileUtil::AppendFile::append(const char* logline, size_t len) {
         }
         written += n;
     }
+    written_bytes_ += written;
 }
 
 void FileUtil::AppendFile::flush() {

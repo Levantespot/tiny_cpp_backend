@@ -62,7 +62,7 @@ void Logger::Impl::finish() {
 
 
 // -------------- Logger Starts --------------
-void defaultOutput(const char* msg, int len)
+void defaultOutput(const char* msg, size_t len)
 {
     fwrite(msg, 1, len, stdout);
 }

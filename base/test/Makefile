@@ -1,11 +1,15 @@
 .PHONY : clean
 
-objects = test_Logger_with_FileUtil test_FileUtil test_Logger test_LogStream test_Timestamp
+objects = test_LogStream test_Timestamp test_Logger test_FileUtil \
+	test_Logger_with_FileUtil   test_Logger_with_LogFile
 
 FLAGS = -Wall -g
 OUTPUT_DIR = build
 
 all : $(objects)
+
+test_Logger_with_LogFile : test_Logger_with_LogFile.cpp ../Logger.a ../LogFile.a
+	g++ -o $(OUTPUT_DIR)/$@ $^ $(FLAGS)
 
 test_Logger_with_FileUtil : test_Logger_with_FileUtil.cpp ../Logger.a ../FileUtil.o
 	g++ -o $(OUTPUT_DIR)/$@ $^ $(FLAGS)

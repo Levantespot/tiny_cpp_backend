@@ -27,6 +27,7 @@ public:
 
     std::string toString() const;
     std::string toFormattedString(bool showMicroseconds = true) const;
+    std::string toCompactFormattedString(bool showMicroseconds = false) const;
     bool valid() const { return microSecondsSinceEpoch_ > 0; }
 
     static Timestamp now(); // 方便不用实例化直接使用

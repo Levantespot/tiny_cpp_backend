@@ -27,6 +27,10 @@ int main() {
     
     l << '\n';
 
+    l << std::string(3000, '-');
+    l << std::string(800, '-');
+    l << std::string(200, '-');
+
     TCB::LogStream::Buffer buffer;
     char cs[] = "Hello, my name is not Lee.";
     buffer.append(cs, strlen(cs));
