@@ -2,7 +2,7 @@
 #define TCB_BASE_LOGSTREAM_H
 
 #include "noncopyable.h"
-// #include <vector>
+#include <iostream>
 #include <string>
 #include <sstream> // stringstream
 #include <cstring> // memcpy
@@ -20,17 +20,26 @@ private:
     char data_[SIZE];
     char* cur_;
 public:
-    FixedBuffer() : cur_(data_) {}
+    FixedBuffer() : cur_(data_) { bzero(); }
     // 返回缓存的头指针
     const char* get_data() const { return data_; }
     // 写缓存
-    void append(const char* buf, size_t len);
+    void append(const char* buf, size_t len) {
+        if (avail() > len) {
+            memcpy(cur_, buf, len);
+            cur_ += len;
+        } else {
+            std::cerr << "TCB::FixedBuffer<SIZE>::append: A log was "
+                "discarded since there is out of space in FixedBuffer!\n";
+        }
+    }
     // 返回缓存的大小
     size_t capacity() const { return SIZE; }
     // 返回缓存使用量
     size_t size() const { return static_cast<size_t>(cur_-data_); }
     // 返回缓存剩余量
     size_t avail() const { return SIZE - size(); }
+    void bzero() { memset(data_, 0, sizeof(data_)); }
     // 重置
     void reset() { cur_ = data_; }
 }; // class FixedBuffer

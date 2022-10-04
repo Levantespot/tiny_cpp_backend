@@ -1,12 +1,19 @@
 .PHONY : clean
 
 objects = test_LogStream test_Timestamp test_Logger test_FileUtil \
-	test_Logger_with_FileUtil   test_Logger_with_LogFile
+	test_Logger_with_FileUtil test_Logger_with_LogFile test_AsyncLogging \
+	test_Logger_with_Async
 
 FLAGS = -Wall -g
 OUTPUT_DIR = build
 
 all : $(objects)
+
+test_Logger_with_Async : test_Logger_with_Async.cpp ../Logger.a ../AsyncLogging.a
+	g++ -o $(OUTPUT_DIR)/$@ $^ $(FLAGS) -pthread
+
+test_AsyncLogging: test_AsyncLogging.cpp ../AsyncLogging.a
+	g++ -o $(OUTPUT_DIR)/$@ $^ $(FLAGS) -pthread
 
 test_Logger_with_LogFile : test_Logger_with_LogFile.cpp ../Logger.a ../LogFile.a
 	g++ -o $(OUTPUT_DIR)/$@ $^ $(FLAGS)

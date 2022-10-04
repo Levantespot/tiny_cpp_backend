@@ -1,17 +1,23 @@
 .PHONY : clean
 
-objects_files = Timestamp.o FileUtil.o LogStream.o Logger.o LogFile.o 
-static_libs =  Logger.a LogFile.a
+objects_files = Timestamp.o FileUtil.o LogStream.o Logger.o LogFile.o AsyncLogging.o
+static_libs =  Logger.a LogFile.a AsyncLogging.a
 
 FLAGS = -g -Wall
 
 all : $(objects_files) $(static_libs)
 
+AsyncLogging.a : AsyncLogging.o LogFile.o Timestamp.o FileUtil.o # LogFile.a
+	ar rcs $@ $^
+
+AsyncLogging.o: AsyncLogging.cpp
+	g++ -c -o $@ $^ $(FLAGS) -pthread
+
 LogFile.a : LogFile.o Timestamp.o FileUtil.o
 	ar rcs $@ $^
 
 LogFile.o : LogFile.cpp
-	g++ -c -o $@ $^ $(FLAGS)
+	g++ -c -o $@ $^ $(FLAGS) -pthread
 
 Logger.a: Logger.o LogStream.o Timestamp.o
 	ar rcs $@ $^
@@ -26,7 +32,7 @@ LogStream.o : LogStream.cpp
 	g++ -c -o $@ $^ $(FLAGS)
 
 Logger.o : Logger.cpp
-	g++ -c -o $@ $^ $(FLAGS) -pthread
+	g++ -c -o $@ $^ $(FLAGS)
 
 clean:
 	- rm $(objects_files) $(static_libs)

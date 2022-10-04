@@ -1,21 +1,6 @@
 #include "LogStream.h"
-#include <iostream>
 
 using namespace TCB;
-
-// -------------- FixedBuffer Starts --------------
-
-template<size_t SIZE>
-void FixedBuffer<SIZE>::append(const char* buf, size_t len) {
-    if (FixedBuffer<SIZE>::avail() > len) {
-        memcpy(cur_, buf, len);
-        cur_ += len;
-    } else {
-        std::cerr << "TCB::FixedBuffer<SIZE>::append: A log was "
-            "discarded since there is out of space in FixedBuffer!\n";
-    }
-}
-// -------------- FixedBuffer Ends --------------
 
 // -------------- LogStream Starts --------------
 

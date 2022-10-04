@@ -4,17 +4,6 @@ namespace TCB
 {
 
 // -------------- Logger::SourceFile Starts --------------
-
-// template<size_t N>
-// Logger::SourceFile::SourceFile(const char (&arr)[N]) : data_(arr), size_(N-1) {
-//     const char* slash = strrchr(data_, '/');
-//     if (slash)
-//     {
-//         data_ = slash + 1;
-//         size_ -= data_ - arr;
-//     }
-// }
-
 Logger::SourceFile::SourceFile(const char* filename) : data_(filename) {
     const char* slash = strrchr(filename, '/');
     if (slash)

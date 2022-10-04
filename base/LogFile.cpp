@@ -5,7 +5,7 @@ namespace TCB
 {
 
 LogFile::LogFile(const std::string& basename,
-                 off_t rollSize,
+                 size_t rollSize,
                  bool threadSafe,
                  int flushInterval,
                  int checkEveryN)

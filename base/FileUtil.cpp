@@ -1,6 +1,4 @@
 #include "FileUtil.h"
-// #include <cassert> // assert
-#include <exception>
 #include <cstring> // strerror
 
 namespace TCB

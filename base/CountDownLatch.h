@@ -8,15 +8,32 @@
 namespace TCB
 {
 
-// 允许一个或者多个线程去等待其他线程完成操作。
+// 控制线程的先后顺序。
+// 例如，线程 0 需要等待其他 N 个线程（1~N）结束后才能运行。
+// 实例化一个 CountDownLatch latch(N);
+// 线程 0 调用 latch.wait(); 其他线程完成后调用 latch.countDown();
 class CountDownLatch : noncopyable
 {
 public:
-    explicit CountDownLatch(int count);
-    void wait(); // 等待其他线程
-    void countDown(); // 其他线程完成任务后调用
-    int64_t getCount() const; // 查看当前还有多少线程没有完成任务
-
+    explicit CountDownLatch(int count) : count_(count) {}
+    void wait() // 等待其他线程
+    {
+        std::unique_lock<std::mutex> ulk(mutex_);
+        cond_.wait(ulk, [this] { return count_ == 0; });
+    }
+    void countDown() // 其他线程完成任务后调用
+    {
+        std::lock_guard<std::mutex> lk(mutex_);
+        count_--;
+        if (count_ == 0) {
+            cond_.notify_all();
+        }
+    }
+    int64_t getCount() const // 查看当前还有多少线程没有完成任务
+    {
+        std::lock_guard<std::mutex> lk(mutex_);
+        return count_;
+    }
 private:
     mutable std::mutex mutex_;
     std::condition_variable cond_;

@@ -17,7 +17,7 @@ class LogFile : noncopyable
 {
 public:
     explicit LogFile(const std::string& basename,
-            off_t rollSize = 10 * 1024 * 1024, // 10 MB
+            size_t rollSize,
             bool threadSafe = true,
             int flushInterval = 3,
             int checkEveryN = 1024);
@@ -33,7 +33,7 @@ private:
 
     const std::string basename_; // 日志文件名
     const size_t rollSize_; // 日志大小的滚动阈值
-    const int flushInterval_; // 刷缓存的最小间隔
+    const int flushInterval_; // 刷缓存的最小间隔（秒）
     const int checkEveryN_; // 检查是否刷缓存或者滚动日志的次数阈值
 
     int count_; // 当前的操作次数
