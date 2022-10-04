@@ -2,11 +2,19 @@
 #define TCB_BASE_ASYNCLOGGING_H
 
 #include "noncopyable.h"
+#include "CountDownLatch.h"
+#include "LogStream.h"
+#include "LogFile.h"
 #include <mutex>
+#include <atomic>
 #include <condition_variable>
-#include <CountDownLatch.h>
+#include <thread>
 #include <vector>
 #include <string>
+#include <memory> // unique_lock, unique_ptr
+#include <functional> // bind
+#include <cassert>
+
 
 namespace TCB
 {
@@ -14,16 +22,34 @@ namespace TCB
 class AsyncLogging : noncopyable {
 
 public:
-    AsyncLogging();
+    AsyncLogging(const std::string& basename,
+                size_t rollSize,
+                int flushInterval = 3);
     ~AsyncLogging();
-    void append();
-    void stop();
+    void append(const char* logline, size_t len);
+    void flush();
 
 private:
-    const int buffer_size = 4096;
-    using Buffer = std::string;
-    using BufferVector = std::vector<std::unique_ptr<Buffer>>;
+    void threadFunc();
 
+    using Buffer = FixedBuffer<kLargeBuffer>;
+    using BufferVector = std::vector<std::unique_ptr<Buffer>>;
+    using BufferPtr = std::unique_ptr<Buffer>;
+
+    const std::string basename_; // 日志文件名
+    const size_t rollSize_; // 日志大小的滚动阈值
+    const int flushInterval_; // 刷缓存的最小间隔（秒）
+
+    std::atomic<bool> running_;
+    std::mutex mutex_; // 用于互斥修改成员变量
+    CountDownLatch latch_; // 控制子线程在父线程完全初始化后才运行
+    std::unique_lock<std::mutex> lock_; // 用于同步
+    std::condition_variable cond_;
+    BufferPtr currentBuffer_; // 当前使用的缓存
+    BufferPtr nextBuffer_ ; // 备用缓存
+    BufferVector buffers_; // 待写入硬盘的已完成的缓存队列
+    std::unique_ptr<LogFile> output;
+    std::thread thread_;
 }; // class AsyncLogging
 
 } // namespace TCB
