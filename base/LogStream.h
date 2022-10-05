@@ -22,7 +22,7 @@ private:
 public:
     FixedBuffer() : cur_(data_) { bzero(); }
     // 返回缓存的头指针
-    const char* get_data() const { return data_; }
+    inline const char* get_data() const { return data_; }
     // 写缓存
     void append(const char* buf, size_t len) {
         if (avail() > len) {
@@ -35,14 +35,14 @@ public:
         }
     }
     // 返回缓存的大小
-    size_t capacity() const { return SIZE; }
+    inline size_t capacity() const { return SIZE; }
     // 返回缓存使用量
-    size_t size() const { return static_cast<size_t>(cur_-data_); }
+    inline size_t size() const { return static_cast<size_t>(cur_-data_); }
     // 返回缓存剩余量
-    size_t avail() const { return SIZE - size(); }
-    void bzero() { memset(data_, 0, sizeof(data_)); }
+    inline size_t avail() const { return SIZE - size(); }
+    inline void bzero() { memset(data_, 0, sizeof(data_)); }
     // 重置
-    void reset() { cur_ = data_; }
+    inline void reset() { cur_ = data_; }
 }; // class FixedBuffer
 
 class LogStream : noncopyable
@@ -50,19 +50,22 @@ class LogStream : noncopyable
 public:
     using Buffer = FixedBuffer<kSmallBuffer>;
 
-    void append(const char* buf, size_t len) { buffer_.append(buf, len); }
-    void resetBuffer() { buffer_.reset(); }
-    const Buffer& get_buffer() const { return buffer_; } // only for debug
+    inline void append(const char* buf, size_t len) { buffer_.append(buf, len); }
+    inline void resetBuffer() { buffer_.reset(); }
+    inline const Buffer& get_buffer() const { return buffer_; } // only for debug
 
-    // 负责算术类型的写入
-    template<typename T> LogStream& operator<<(T v) {
+    // 负责其他类型（整数）的写入
+    template<typename T> LogStream& operator<<(const T& v) {
         std::stringstream strm;
         strm << v;
         const std::string &s(strm.str());
         buffer_.append(s.c_str(), s.size());
         return *this;
     }
-    // 负责单个字符的写入
+    LogStream& operator<<(float);
+    // 负责 double 的写入
+    LogStream& operator<<(double);
+    //负责单个字符的写入
     LogStream& operator<<(char);
     // 负责 c 风格字符串指针的写入
     LogStream& operator<<(const char*);

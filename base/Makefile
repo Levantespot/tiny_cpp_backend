@@ -3,7 +3,7 @@
 objects_files = Timestamp.o FileUtil.o LogStream.o Logger.o LogFile.o AsyncLogging.o
 static_libs =  Logger.a LogFile.a AsyncLogging.a
 
-FLAGS = -g -Wall
+FLAGS = -g -Wall -O2
 
 all : $(objects_files) $(static_libs)
 

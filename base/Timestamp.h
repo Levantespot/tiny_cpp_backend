@@ -28,12 +28,12 @@ public:
     std::string toString() const;
     std::string toFormattedString(bool showMicroseconds = true) const;
     std::string toCompactFormattedString(bool showMicroseconds = false) const;
-    bool valid() const { return microSecondsSinceEpoch_ > 0; }
+    inline bool valid() const { return microSecondsSinceEpoch_ > 0; }
 
     static Timestamp now(); // 方便不用实例化直接使用
 
     // only for internal usage
-    int64_t microSecondsSinceEpoch() const { return microSecondsSinceEpoch_; }
+    inline int64_t microSecondsSinceEpoch() const { return microSecondsSinceEpoch_; }
 };
 
 inline bool operator<(const Timestamp &lhs, const Timestamp &rhs) {

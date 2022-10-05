@@ -3,7 +3,6 @@
 using namespace TCB;
 
 // -------------- LogStream Starts --------------
-
 LogStream& LogStream::operator<<(char v) { 
     buffer_.append(&v, 1);
     return *this;

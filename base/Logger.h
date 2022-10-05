@@ -40,19 +40,11 @@ public:
         const char* data_;
         size_t size_;
     public:
-        // template<size_t N> SourceFile(const char (&arr)[N]) : data_(arr), size_(N-1) {
-        //     const char* slash = strrchr(data_, '/');
-        //     if (slash)
-        //     {
-        //         data_ = slash + 1;
-        //         size_ -= data_ - arr;
-        //     }
-        // }
         SourceFile(const char* filename);
         SourceFile(const SourceFile &) = default;
         
-        const char* get_data() const { return data_; }
-        const size_t size() const { return size_; }
+        inline const char* get_data() const { return data_; }
+        inline const size_t size() const { return size_; }
     }; // class Source File
 private:
     // 封装格式化日志信息的类
@@ -74,7 +66,7 @@ private:
     Impl impl_;
 public:
     // Internal usage only!
-    LogStream& stream() { return impl_.stream_; }
+    inline LogStream& stream() { return impl_.stream_; }
 
 /* ------- 构造析构 -------*/
 public:
@@ -88,11 +80,6 @@ public:
 /* ------- 输出 & 刷缓存 -------*/
 public:
     // 输出函数的函数类型
-    // void test(const char* msg, size_t len);
-    // typedef std::function<void(const char* msg, size_t len)> OutputFunc1;
-    // static void setOutput(OutputFunc1);
-    // B b;
-    // setOutput(std::bind(&B::test,&b));
 
     using OutputFunc = std::function<void (const char* msg, size_t len)>;
     // 刷缓存函数的函数类型

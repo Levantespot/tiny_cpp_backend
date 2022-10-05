@@ -21,7 +21,7 @@ namespace FileUtil
         void append(const char* logline, size_t len); 
         void flush();
 
-        size_t writenBytes () const { return written_bytes_; }
+        inline size_t writenBytes () const { return written_bytes_; }
     private:
         FILE* fp_;
         static char buffer_[64 * 1024]; // 64kb default

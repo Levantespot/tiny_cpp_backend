@@ -4,14 +4,13 @@ objects = test_LogStream test_Timestamp test_Logger test_FileUtil \
 	test_Logger_with_FileUtil test_Logger_with_LogFile test_AsyncLogging \
 	test_Logger_with_Async bench_Logger_with_LogFile
 
-FLAGS = -Wall -g
-FLAGS2 = -Wall -pg
+FLAGS = -Wall -g -O2
 OUTPUT_DIR = build
 
 all : $(objects)
 
 bench_Logger_with_LogFile : bench_Logger_with_LogFile.cpp ../Logger.a ../LogFile.a
-	g++ -o $(OUTPUT_DIR)/$@ $^ $(FLAGS2) -pthread
+	g++ -o $(OUTPUT_DIR)/$@ $^ $(FLAGS) -pthread -p
 
 test_Logger_with_Async : test_Logger_with_Async.cpp ../Logger.a ../AsyncLogging.a
 	g++ -o $(OUTPUT_DIR)/$@ $^ $(FLAGS) -pthread
