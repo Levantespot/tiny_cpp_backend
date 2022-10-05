@@ -29,8 +29,9 @@ public:
             memcpy(cur_, buf, len);
             cur_ += len;
         } else {
-            std::cerr << "TCB::FixedBuffer<SIZE>::append: A log was "
-                "discarded since there is out of space in FixedBuffer!\n";
+            std::cerr << "A log with length of " << len 
+                << " was discarded since there is "
+                << avail() << " space left in FixedBuffer!\n";
         }
     }
     // 返回缓存的大小

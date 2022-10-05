@@ -4,6 +4,12 @@
 #include <unistd.h>
 #include <iostream>
 
+void wait() {
+    // 保证两次时间不同，不然可能不会滚动文件
+    std::cout << "Wait for 1 seconds\n" ;
+    sleep(1);
+}
+
 int main() {
     TCB::LogFile log_file("logfile", 1024);
 
@@ -17,14 +23,20 @@ int main() {
     TCB::Logger::setFlush(flush2file);
 
     LOG_INFO << "1" ;
-    LOG_INFO << std::string(2000, 'H');
-    LOG_INFO << "2" ;
-    std::cout << "Wait for 5 seconds\n" ;
-    sleep(5); // 保证两次时间不同，不然可能不会滚动文件
-    LOG_INFO << std::string(2000, '-');
-    LOG_INFO << "2" ;
-    LOG_INFO << std::string(4*1024, 'H') ;
+    wait(); 
+    LOG_INFO << std::string(850, '2');
+    wait(); 
+    for (int i = 0; i < 'z' - 'a'; i++) {
+        LOG_INFO << 'a' + i;
+        wait();
+    }
     LOG_INFO << "3" ;
+    wait();
+    LOG_INFO << "4" ;
+    wait();
+    LOG_INFO << "5" ;
+    wait();
+    LOG_INFO << "6" ;
 
     return 0;
 }

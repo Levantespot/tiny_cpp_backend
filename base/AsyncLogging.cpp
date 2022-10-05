@@ -26,17 +26,13 @@ AsyncLogging::AsyncLogging(const std::string& basename,
 
 AsyncLogging::~AsyncLogging()
 {   
-    std::cout << "a\n" ; // DEBUG
     if (running_) {
         running_ = false;
-        std::cout << "b\n" ; // DEBUG
         cond_.notify_one(); // 通知线程写入剩余部分
         if (thread_.joinable()) {
-            std::cout << "c\n" ; // DEBUG
             thread_.join();
         }
     }
-    std::cout << "d\n" ; // DEBUG
 }
 
 void AsyncLogging::append(const char* logline, size_t len) {
@@ -72,22 +68,16 @@ void AsyncLogging::threadFunc() {
     BufferPtr newBuffer(new Buffer);
     BufferVector buffersToWrite;
     buffersToWrite.reserve(16);
-    std::cout << "1\n" ; // DEBUG
     while (running_) {
-        std::cout << "2\n" ; // DEBUG
         lock_.lock();
         cond_.wait(lock_, [this] () {
             return !running_ || !buffers_.empty(); 
         });
-        std::cout << "3\n" ; // DEBUG
 
         if (!running_) { // 退出循环
-            std::cout << "3.5\n" ; // DEBUG
             lock_.unlock();
-            std::cout << "3.55" << std::endl; // DEBUG
             break;
         }
-        std::cout << "4\n" ; // DEBUG
 
         // 交换 buffers (condition race)
         buffersToWrite.swap(buffers_);
@@ -111,7 +101,6 @@ void AsyncLogging::threadFunc() {
         buffersToWrite.clear();
         flush();
     }
-    std::cout << "5\n" ; // DEBUG
     // 写入剩余部分 (condition race)
     {
         std::lock_guard<std::mutex> lk(mutex_);
@@ -126,7 +115,6 @@ void AsyncLogging::threadFunc() {
         output->append(bf->get_data(), bf->size());
     }
     flush();
-    std::cout << "6\n" ; // DEBUG
 }
 
 } // namespace TCB

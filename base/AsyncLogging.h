@@ -22,9 +22,9 @@ namespace TCB
 class AsyncLogging : noncopyable {
 
 public:
-    AsyncLogging(const std::string& basename,
-                size_t rollSize,
-                int flushInterval = 3);
+    explicit AsyncLogging(const std::string& basename,
+                        size_t rollSize = 2 * kLargeBuffer, // 大于 kLargeBuffer 才有意义，如
+                        int flushInterval = 3);
     ~AsyncLogging();
     void append(const char* logline, size_t len);
     void flush();
@@ -43,8 +43,8 @@ private:
     std::atomic<bool> running_;
     std::mutex mutex_; // 用于互斥修改成员变量
     CountDownLatch latch_; // 控制子线程在父线程完全初始化后才运行
-    std::unique_lock<std::mutex> lock_; // 用于同步
-    std::condition_variable cond_;
+    std::unique_lock<std::mutex> lock_; // 用于条件变量的同步
+    std::condition_variable cond_; // 用于同步
     BufferPtr currentBuffer_; // 当前使用的缓存
     BufferPtr nextBuffer_ ; // 备用缓存
     BufferVector buffers_; // 待写入硬盘的已完成的缓存队列
