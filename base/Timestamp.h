@@ -45,6 +45,9 @@ inline bool operator>(const Timestamp &lhs, const Timestamp &rhs) {
 inline bool operator==(const Timestamp &lhs, const Timestamp &rhs) {
     return lhs.microSecondsSinceEpoch() == rhs.microSecondsSinceEpoch();
 }
+inline int64_t operator-(const Timestamp &lhs, const Timestamp &rhs) {
+    return lhs.microSecondsSinceEpoch() - rhs.microSecondsSinceEpoch();
+}
 // end for Timestamp
 
 

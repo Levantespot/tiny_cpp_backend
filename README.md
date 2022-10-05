@@ -14,8 +14,8 @@ TODO
   - 后端
     - [x] FileUtil: 封装 OS 提供的文件读写操作接口，并开启 I/O 缓冲，线程安全由上一层级调用者考虑；
     - [x] LogFile: 提供日志滚动功能，在 FileUtil 的基础上，保证按序写入硬盘；
-    - [ ] AsyncLogging
+    - [x] AsyncLogging: 创建一个子线程负责用 LogFile 写入硬盘，并通过大缓存队列来减少读写硬盘的次数，
   - 配置
-    - 前端: Logger + 后端: LogFile = 单线程日志, 见 [示例文件](./base/test/test_Logger_with_LogFile.cpp).
-    - 前端: Logger + 后端: AsyncLogging = 多线程异步日志，多线程主要指的是前端和后端为两个不同的线程。
+    - 前端: Logger + 后端: LogFile = 单线程日志, 见 [示例](./base/test/test_Logger_with_LogFile.cpp).
+    - 前端: Logger + 后端: AsyncLogging = 多线程异步日志, 见 [示例](./base/test/test_Logger_with_Async.cpp)，多线程主要指的是日志的前端和后端为两个不同的线程。
 - 网络库
