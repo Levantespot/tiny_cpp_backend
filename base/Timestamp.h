@@ -5,7 +5,7 @@
 // #include <ctime> // c++11
 // #include <chrono> // c++20 可以用 std::chrono，更方便
 #include <string>
-// #include <stdint.h> // int64_t
+#include <cstring>
 
 namespace TCB {
 
@@ -34,6 +34,7 @@ public:
 
     // only for internal usage
     inline int64_t microSecondsSinceEpoch() const { return microSecondsSinceEpoch_; }
+    inline int64_t secondsSinceEpoch() const { return microSecondsSinceEpoch_ / kMicroSecondsPerSecond;}
 };
 
 inline bool operator<(const Timestamp &lhs, const Timestamp &rhs) {

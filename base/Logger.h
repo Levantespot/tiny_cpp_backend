@@ -4,6 +4,7 @@
 #include "LogStream.h"
 #include "Timestamp.h"
 #include <thread> // this_thread::get_id
+#include <string>
 #include <cstring> // strerror
 #include <cstdlib> // abort
 #include <functional>
@@ -32,15 +33,27 @@ private:
 
 /* ------- 辅助类 -------*/
 public:
-    // 构造时输入文件路径，得到文件名
-    // 结合宏，可以在编译时就获得调用日志库的文件的文件名
+    // 构造时输入文件路径，去除路径，得到文件名
     class SourceFile
     {
     private:
         const char* data_;
         size_t size_;
     public:
-        SourceFile(const char* filename);
+        template<int N>
+        SourceFile(const char (&arr)[N])
+          : data_(arr),
+            size_(N-1)
+        {   
+
+            const char* slash = strrchr(data_, '/'); // builtin function
+            if (slash)
+            {
+                data_ = slash + 1;
+                size_ -= static_cast<int>(data_ - arr);
+            }
+        }
+        explicit SourceFile(const char* filename);
         SourceFile(const SourceFile &) = default;
         
         inline const char* get_data() const { return data_; }

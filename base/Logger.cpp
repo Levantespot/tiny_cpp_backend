@@ -3,11 +3,13 @@
 namespace TCB
 {
 
+thread_local bool thread_id_buffered = false;
+thread_local std::string thread_id_;
+
 // -------------- Logger::SourceFile Starts --------------
 Logger::SourceFile::SourceFile(const char* filename) : data_(filename) {
     const char* slash = strrchr(filename, '/');
-    if (slash)
-    {
+    if (slash) {
         data_ = slash + 1;
     }
     size_ = strlen(data_);
@@ -37,14 +39,20 @@ Logger::Impl::Impl(LogLevel level, int savedErrno, const SourceFile& file, int l
     basename_(file)
 {
     stream_ << time_.toFormattedString() << " "; // 写时间
-    stream_ << std::this_thread::get_id() << " "; // 写当前线程的id
+    if (!thread_id_buffered) {
+        std::stringstream ss;
+        ss << std::this_thread::get_id();
+        thread_id_ = ss.str();
+        thread_id_buffered = true;
+    }
+    stream_ << thread_id_ << " "; // 写当前线程的id
     stream_ << LogLevelName[level] << " "; // 写日志等级
     if (savedErrno != 0) { // 写错误信息
         stream_ << std::strerror(savedErrno) << " (errno=" << savedErrno << ") ";
     }
     
 }
-void Logger::Impl::finish() {
+inline void Logger::Impl::finish() {
     stream_ << " - " << basename_ << ':' << line_ << '\n';
 }
 // -------------- Logger::Impl Ends --------------
