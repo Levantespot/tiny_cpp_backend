@@ -67,26 +67,34 @@ void LogFile::flush() {
 }
 
 // 关闭文件 -> 新建新的文件 -> 更新状态（成员变量）
-void LogFile::rollFile() {
-    time_t now = 0;
-    std::string filename = createLogFileName(basename_, &now);
-    time_t start = now / kRollPerSeconds_ * kRollPerSeconds_;
+bool LogFile::rollFile() {
+    time_t now = time(nullptr);
 
-    // 关闭文件 + 新建新的文件
-    file_.reset(new FileUtil::AppendFile(filename.c_str()));
-    // 更新状态
-    lastRoll_ = now;
-    lastFlush_ = now;
-    startOfPeriod_ = start;
+    if (now > lastRoll_) {
+        std::string filename = createLogFileName(basename_, now);
+        time_t startPeriod = now / kRollPerSeconds_ * kRollPerSeconds_;
+        // 关闭文件 + 新建新的文件
+        file_.reset(new FileUtil::AppendFile(filename.c_str()));
+        // 更新状态
+        lastRoll_ = now;
+        lastFlush_ = now;
+        startOfPeriod_ = startPeriod;
+
+        return true;
+    }
+    return false;
 }
 
-std::string LogFile::createLogFileName(const std::string& basename, time_t* now) {
+std::string LogFile::createLogFileName(const std::string& basename, time_t now) {
     std::string filename;
     filename.reserve(basename.size() + 32);
     filename = basename;
 
-    Timestamp ts = Timestamp::now();
-    filename += ts.toCompactFormattedString();
+    char timebuf[32];
+    struct tm tm;
+    gmtime_r(&now, &tm);
+    strftime(timebuf, sizeof(timebuf), ".%Y%m%d-%H%M%S", &tm);
+    filename += timebuf;
 
     filename += ".log";
 

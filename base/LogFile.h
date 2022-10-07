@@ -24,12 +24,12 @@ public:
     ~LogFile() = default;
     void append(const char* logline, size_t len);
     void flush();   // 刷缓存
-    void rollFile(); // 滚动日志文件
+    bool rollFile(); // 滚动日志文件
 
 private:
     void append_unlocked(const char* logline, size_t len);
 
-    static std::string createLogFileName(const std::string& basename, time_t* now);
+    static std::string createLogFileName(const std::string& basename, time_t now);
 
     const std::string basename_; // 日志文件名
     const size_t rollSize_; // 日志大小的滚动阈值
