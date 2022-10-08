@@ -7,7 +7,7 @@ FLAGS = -g -Wall -O2
 
 all : $(objects_files) $(static_libs)
 
-AsyncLogging.a : AsyncLogging.o LogFile.o Timestamp.o FileUtil.o # LogFile.a
+AsyncLogging.a : AsyncLogging.o LogFile.o Timestamp.o FileUtil.o
 	ar rcs $@ $^
 
 AsyncLogging.o: AsyncLogging.cpp

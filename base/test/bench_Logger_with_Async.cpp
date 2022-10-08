@@ -16,7 +16,7 @@ void dummyOutput(const char* msg, int len)
 void bench(const char* type)
 {   
     TCB::Logger::setOutput(dummyOutput);
-    TCB::Logger::setFlush(std::bind(&TCB::AsyncLogging::flush, plog.get()));
+    // TCB::Logger::setFlush(std::bind(&TCB::AsyncLogging::flush, plog.get())); // 不用设置 Flush
     TCB::Timestamp start(TCB::Timestamp::now());
     g_total = 0;
 

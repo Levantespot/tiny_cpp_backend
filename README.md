@@ -22,7 +22,7 @@
     - 尽可能地显示内联成员函数 `inline` & 开启优化等级 `-O1` or `-O2`
     - 用 `thread_local` 变量缓存每个线程的 id，每次写日志的时候就不必重复调用 `std::this_thread::get_id()` 了;
     - 将 Timestamp 中的日期（年/月/日-时/分/秒）缓存，在同一秒内，只更新微秒部分;
-    - 在 `LogStream` 中, 用「模板 + `stringstream`」的方式写入整数及其他类型的输入;
+    - 在 `LogStream` 中, 曾试过用「模板 + `stringstream`」将输入转换为字符串，但是会非常慢，推测是由于 `stringstream` 的初始化很慢;
     - 将 `Sourcefile` 的构造函数定义为模板，编译时就能计算部分结果;
 
 - 网络库 TODO
