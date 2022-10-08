@@ -13,7 +13,7 @@
 #include <string>
 #include <memory> // unique_lock, unique_ptr
 #include <functional> // bind
-#include <cassert>
+#include <chrono>
 
 
 namespace TCB
@@ -38,7 +38,7 @@ private:
 
     const std::string basename_; // 日志文件名
     const size_t rollSize_; // 日志大小的滚动阈值
-    const int flushInterval_; // 刷缓存的最小间隔（秒）
+    const std::chrono::seconds flushInterval_; // 刷缓存的最小间隔（秒）
 
     std::atomic<bool> running_;
     std::mutex mutex_; // 用于互斥修改成员变量

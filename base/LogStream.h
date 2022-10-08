@@ -21,6 +21,28 @@ private:
     char* cur_;
 public:
     FixedBuffer() : cur_(data_) { bzero(); }
+    // FixedBuffer(const std::string &buf) : cur_(data_) {
+    //     int size = buf.size();
+    //     if (size <= SIZE) {
+    //         memcpy(cur_, buf.c_str(), size);
+    //         cur_ += size;
+    //     } else {
+    //         ignore(size);
+    //     }
+    // }
+    // FixedBuffer(const std::stringstream &ss) : cur_(data_) {
+    //     std::string buf = ss.str();
+    //     int size = buf.size();
+    //     if (size < SIZE) {
+    //         memcpy(cur_, buf.c_str(), size);
+    //         cur_ += size;
+    //     } else {
+    //         std::cerr << "Logs with length of " 
+    //             << size << " was truncate!\n";
+    //         memcpy(cur_, buf.c_str() + (size-SIZE), SIZE);
+    //         cur_ += SIZE;
+    //     }
+    // }
     // 返回缓存的头指针
     inline const char* get_data() const { return data_; }
     // 写缓存
@@ -29,9 +51,7 @@ public:
             memcpy(cur_, buf, len);
             cur_ += len;
         } else {
-            std::cerr << "A log with length of " << len 
-                << " was discarded since there is "
-                << avail() << " space left in FixedBuffer!\n";
+            ignore(len);
         }
     }
     // 返回缓存的大小
@@ -43,6 +63,12 @@ public:
     inline void bzero() { memset(data_, 0, sizeof(data_)); }
     // 重置
     inline void reset() { cur_ = data_; }
+    // 忽略并输出错误信息
+    inline void ignore(int len) const {
+        std::cerr << "A log with length of " << len 
+                << " was discarded since there is "
+                << avail() << " space left in FixedBuffer!\n";
+    }
 }; // class FixedBuffer
 
 class LogStream : noncopyable
@@ -54,18 +80,13 @@ public:
     inline void resetBuffer() { buffer_.reset(); }
     inline const Buffer& get_buffer() const { return buffer_; } // only for debug
 
-    // 负责其他类型（整数）的写入
+    // 负责其他类型（如整数）的写入
     template<typename T> LogStream& operator<<(const T& v) {
-        std::stringstream strm;
-        strm << v;
-        const std::string &s(strm.str());
+        strm_ << v;
+        const std::string &s(strm_.str());
         buffer_.append(s.c_str(), s.size());
         return *this;
     }
-    LogStream& operator<<(float);
-    // 负责 double 的写入
-    LogStream& operator<<(double);
-    //负责单个字符的写入
     LogStream& operator<<(char);
     // 负责 c 风格字符串指针的写入
     LogStream& operator<<(const char*);
@@ -74,6 +95,7 @@ public:
     // 负责 Buffer 的写入
     LogStream& operator<<(const Buffer&);
 private:
+    std::stringstream strm_;
     Buffer buffer_;
     static const int kMaxNumericSize = 48;
 };

@@ -1,6 +1,6 @@
 #include "LogStream.h"
 
-using namespace TCB;
+namespace TCB {
 
 // -------------- LogStream Starts --------------
 LogStream& LogStream::operator<<(char v) { 
@@ -10,8 +10,7 @@ LogStream& LogStream::operator<<(char v) {
 LogStream& LogStream::operator<<(const char* str) {
     if (str) {
         buffer_.append(str, strlen(str));
-    }
-    else {
+    } else {
         buffer_.append("(null)", 6);
     }
     return *this;
@@ -24,4 +23,7 @@ LogStream& LogStream::operator<<(const Buffer& v) {
     buffer_.append(v.get_data(), v.size());
     return *this;
 }
+
 // -------------- LogStream Ends --------------
+
+}

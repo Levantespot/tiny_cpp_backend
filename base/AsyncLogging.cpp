@@ -5,10 +5,10 @@ namespace TCB
 
 AsyncLogging::AsyncLogging(const std::string& basename,
                             size_t rollSize,
-                            int flushInterval)
+                            int flushIntervalSecond)
   : basename_(basename),
     rollSize_(rollSize),
-    flushInterval_(flushInterval),
+    flushInterval_(flushIntervalSecond),
     running_(true),
     mutex_(),
     latch_(1),
@@ -70,7 +70,7 @@ void AsyncLogging::threadFunc() {
     buffersToWrite.reserve(16);
     while (running_) {
         lock_.lock();
-        cond_.wait(lock_, [this] () {
+        cond_.wait_for(lock_, std::chrono::seconds(flushInterval_), [this] () {
             return !running_ || !buffers_.empty(); 
         });
 

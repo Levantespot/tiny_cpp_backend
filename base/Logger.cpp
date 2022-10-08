@@ -84,7 +84,7 @@ Logger::Logger(SourceFile file, int line, bool toAbort)
 
 Logger::~Logger() {
     impl_.finish();
-    const LogStream::Buffer& buf(stream().get_buffer());
+    const LogStream::Buffer &buf = stream().get_buffer();
     g_output(buf.get_data(), buf.size());
     if (impl_.level_ == FATAL)
     {
