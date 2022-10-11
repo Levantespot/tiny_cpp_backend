@@ -88,7 +88,7 @@ private:
     void formatInteger(T v);
 
     Buffer buffer_;
-    static const int kMaxNumericSize;
+    static constexpr int kMaxNumericSize = 48;
 };
 
 } // namespace TCB

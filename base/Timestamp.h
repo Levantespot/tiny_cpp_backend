@@ -20,7 +20,7 @@ class Timestamp
 private:
     int64_t microSecondsSinceEpoch_;
 public:
-    static const int kMicroSecondsPerSecond = 1000 * 1000;
+    static constexpr int kMicroSecondsPerSecond = 1000 * 1000;
 
     Timestamp () : microSecondsSinceEpoch_(0) {}
     explicit Timestamp (int64_t microSecondsSinceEpoch) : microSecondsSinceEpoch_(microSecondsSinceEpoch) {}

@@ -65,7 +65,7 @@ void defaultOutput(const char* msg, std::size_t len)
 }
 void defaultFlush()
 {
-    fflush(stdout);
+    // fflush(stdout);
 }
 Logger::OutputFunc Logger::g_output = defaultOutput;    // 静态成员函数，需要在类外初始化
 Logger::FlushFunc Logger::g_flush = defaultFlush;       

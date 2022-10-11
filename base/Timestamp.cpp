@@ -3,7 +3,7 @@
 namespace TCB
 {
 
-const int time_buffer_size = 64;
+constexpr int time_buffer_size = 64;
 thread_local char t_time[time_buffer_size];
 thread_local char t_micro[time_buffer_size];
 thread_local time_t t_lastSecond = 0;

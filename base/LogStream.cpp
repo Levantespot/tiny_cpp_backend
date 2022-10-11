@@ -54,8 +54,6 @@ std::size_t convertHex(char buf[], uintptr_t value)
 
 // -------------- LogStream Starts --------------
 
-const int LogStream::kMaxNumericSize(48);
-
 template<typename T>
 void LogStream::formatInteger(T v)
 {

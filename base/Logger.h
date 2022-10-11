@@ -61,7 +61,7 @@ public:
     }; // class Source File
 private:
     // 封装格式化日志信息的类
-    class Impl
+    class Impl : noncopyable
     {
     public:
         // 构造的同时，写入事件、线程id、日志级别，错误信息（如果有的话）。
