@@ -4,7 +4,7 @@
 int main() {
     TCB::FileUtil::AppendFile af("logfile.log");
 
-    std::function<void (const char*, size_t)> append2file = \
+    std::function<void (const char*, std::size_t)> append2file = \
         std::bind(&TCB::FileUtil::AppendFile::append, &af, std::placeholders::_1, std::placeholders::_2);
     std::function<void ()> flush2file = std::bind(&TCB::FileUtil::AppendFile::flush, &af);
     

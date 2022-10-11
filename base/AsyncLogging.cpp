@@ -4,7 +4,7 @@ namespace TCB
 {
 
 AsyncLogging::AsyncLogging(const std::string& basename,
-                            size_t rollSize,
+                            std::size_t rollSize,
                             int flushIntervalSecond)
   : basename_(basename),
     rollSize_(rollSize),
@@ -35,7 +35,7 @@ AsyncLogging::~AsyncLogging()
     }
 }
 
-void AsyncLogging::append(const char* logline, size_t len) {
+void AsyncLogging::append(const char* logline, std::size_t len) {
     if (!running_) {
         std::cerr << "Not running!" << '\n';
         return;
@@ -56,10 +56,6 @@ void AsyncLogging::append(const char* logline, size_t len) {
         currentBuffer_->append(logline, len);
         cond_.notify_one(); // 通知线程有数据可写
     }
-}
-
-void AsyncLogging::flush() {
-    output->flush();
 }
 
 void AsyncLogging::threadFunc() {

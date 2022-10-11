@@ -14,7 +14,7 @@ int main() {
     TCB::LogFile log_file("logfile", 1024);
 
     // 适配函数
-    std::function<void (const char*, size_t)> append2file = \
+    std::function<void (const char*, std::size_t)> append2file = \
         std::bind(&TCB::LogFile::append, &log_file, std::placeholders::_1, std::placeholders::_2);
     std::function<void ()> flush2file = std::bind(&TCB::LogFile::flush, &log_file);
     

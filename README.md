@@ -20,9 +20,10 @@
   - 优化
     - benchmark 见 [单线程日志](./base/test/bench_Logger_with_LogFile.cpp) 和 [异步日志](./base/test/bench_Logger_with_Async.cpp);
     - 尽可能地显示内联成员函数 `inline` & 开启优化等级 `-O1` or `-O2`
-    - 用 `thread_local` 变量缓存每个线程的 id，每次写日志的时候就不必重复调用 `std::this_thread::get_id()` 了;
+    - 用 `thread_local` 类型的变量缓存每个线程的 id，每次写日志的时候就不必重复调用 `this_thread::get_id()` 了;
     - 将 Timestamp 中的日期（年/月/日-时/分/秒）缓存，在同一秒内，只更新微秒部分;
-    - 在 `LogStream` 中, 曾试过用「模板 + `stringstream`」将输入转换为字符串，但是会非常慢，推测是由于 `stringstream` 的初始化很慢;
-    - 将 `Sourcefile` 的构造函数定义为模板，编译时就能计算部分结果;
+    - 在 `LogStream` 中, 曾试过用「模板 + `stringstream`」将输入转换为字符串，但是会非常慢，推测是由于 `stringstream` 的实例化开销较大;
+    - 将 `Sourcefile` 的构造函数定义为模板，编译时就能计算部分结果（提升较小）;
+    - `AsyncLogging` 中的大缓存使用智能指针管理，需要写入磁盘时直接 `swap` 指针后直接交给 `LogFile`，尽可能地减少临界区的长度;
 
 - 网络库 TODO

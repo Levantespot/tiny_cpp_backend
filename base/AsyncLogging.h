@@ -23,11 +23,11 @@ class AsyncLogging : noncopyable {
 
 public:
     explicit AsyncLogging(const std::string& basename,
-                        size_t rollSize = 2 * kLargeBuffer, // 大于 kLargeBuffer 才有意义，如
+                        std::size_t rollSize = 2 * kLargeBuffer, // 大于 kLargeBuffer 才有意义，如
                         int flushInterval = 3);
     ~AsyncLogging();
-    void append(const char* logline, size_t len);
-    void flush();
+    void append(const char* logline, std::size_t len);
+    inline void flush() { output->flush(); };
 
 private:
     void threadFunc();
@@ -37,7 +37,7 @@ private:
     using BufferPtr = std::unique_ptr<Buffer>;
 
     const std::string basename_; // 日志文件名
-    const size_t rollSize_; // 日志大小的滚动阈值
+    const std::size_t rollSize_; // 日志大小的滚动阈值
     const std::chrono::seconds flushInterval_; // 刷缓存的最小间隔（秒）
 
     std::atomic<bool> running_;

@@ -5,7 +5,7 @@ namespace TCB
 {
 
 LogFile::LogFile(const std::string& basename,
-                 size_t rollSize,
+                 std::size_t rollSize,
                  bool threadSafe,
                  int flushInterval,
                  int checkEveryN)
@@ -23,7 +23,7 @@ LogFile::LogFile(const std::string& basename,
     rollFile(); // 首次生成日志
 }
 
-void LogFile::append(const char* logline, size_t len) {
+void LogFile::append(const char* logline, std::size_t len) {
     if (mutex_) {
         std::lock_guard<std::mutex> lock(*mutex_);
         append_unlocked(logline, len);
@@ -32,7 +32,7 @@ void LogFile::append(const char* logline, size_t len) {
     }
 }
 
-void LogFile::append_unlocked(const char* logline, size_t len) {
+void LogFile::append_unlocked(const char* logline, std::size_t len) {
     file_->append(logline, len);
 
     if (file_->writenBytes() > rollSize_) {

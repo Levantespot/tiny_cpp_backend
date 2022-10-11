@@ -1,12 +1,12 @@
 #include "FileUtil.h"
-#include <cstring> // strerror
 
 namespace TCB
 {
-char FileUtil::AppendFile::buffer_[64 * 1024] = {0};
 
 FileUtil::AppendFile::AppendFile(const char* filename)
-: fp_(fopen(filename, "a")), written_bytes_(0)
+  : fp_(fopen(filename, "a")),
+    buffer_{0},
+    written_bytes_(0)
 {
     // assert(fp_);
     if (fp_ == nullptr) {
@@ -21,7 +21,7 @@ FileUtil::AppendFile::~AppendFile() {
 }
 
 // fputs_unlocked version, simpler but slower
-// void FileUtil::AppendFile::append(const char* logline, size_t len) {
+// void FileUtil::AppendFile::append(const char* logline, std::size_t len) {
 //     // speed : fwrite_unlocked > fputs_unlocked > fwrite > fputs > ofstream
 //     if (fputs_unlocked(logline, fp_) < 0) {
 //         int err = ferror(fp_);
@@ -31,14 +31,14 @@ FileUtil::AppendFile::~AppendFile() {
 //     }
 // }
 
-void FileUtil::AppendFile::append(const char* logline, size_t len) {
+void FileUtil::AppendFile::append(const char* logline, std::size_t len) {
     // speed : fwrite_unlocked > fputs_unlocked > fwrite > fputs > ofstream
-    size_t written = 0;
+    std::size_t written = 0;
 
     while (written != len)
     {
-        size_t remain = len - written;
-        size_t n = fwrite_unlocked(logline, 1, len, fp_);
+        std::size_t remain = len - written;
+        std::size_t n = fwrite_unlocked(logline, 1, len, fp_);
         if (n != remain)
         {
             int err = ferror(fp_);

@@ -12,7 +12,7 @@ static_assert(sizeof digitsHex == 17, "wrong number of digitsHex");
 
 // Efficient Integer to String Conversions, by Matthew Wilson.
 template<typename T>
-size_t convert(char buf[], T value)
+std::size_t convert(char buf[], T value)
 {
     T i = value;
     char* p = buf;
@@ -34,7 +34,7 @@ size_t convert(char buf[], T value)
     return p - buf;
 }
 
-size_t convertHex(char buf[], uintptr_t value)
+std::size_t convertHex(char buf[], uintptr_t value)
 {
     uintptr_t i = value;
     char* p = buf;
@@ -54,12 +54,14 @@ size_t convertHex(char buf[], uintptr_t value)
 
 // -------------- LogStream Starts --------------
 
+const int LogStream::kMaxNumericSize(48);
+
 template<typename T>
 void LogStream::formatInteger(T v)
 {
     if (buffer_.avail() >= kMaxNumericSize)
     {
-        size_t len = convert(buffer_.get_cur(), v);
+        std::size_t len = convert(buffer_.get_cur(), v);
         buffer_.add(len);
     }
 }
@@ -146,7 +148,7 @@ LogStream& LogStream::operator<<(const void* p)
         char* buf = buffer_.get_cur();
         buf[0] = '0';
         buf[1] = 'x';
-        size_t len = convertHex(buf+2, v);
+        std::size_t len = convertHex(buf+2, v);
         buffer_.add(len+2);
     }
     return *this;

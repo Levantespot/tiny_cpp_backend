@@ -38,10 +38,10 @@ public:
     {
     private:
         const char* data_;
-        size_t size_;
+        std::size_t size_;
     public:
         template<int N>
-        SourceFile(const char (&arr)[N])
+        SourceFile(const char (&arr)[N]) // implicit
           : data_(arr),
             size_(N-1)
         {   
@@ -57,14 +57,13 @@ public:
         SourceFile(const SourceFile &) = default;
         
         inline const char* get_data() const { return data_; }
-        inline const size_t size() const { return size_; }
+        inline const std::size_t size() const { return size_; }
     }; // class Source File
 private:
     // 封装格式化日志信息的类
     class Impl
     {
     public:
-        Impl() = delete;
         // 构造的同时，写入事件、线程id、日志级别，错误信息（如果有的话）。
         Impl(LogLevel level, int savedErrno, const SourceFile& file, int line);
         // 最后写入文件名和行号
@@ -94,7 +93,7 @@ public:
 public:
     // 输出函数的函数类型
 
-    using OutputFunc = std::function<void (const char* msg, size_t len)>;
+    using OutputFunc = std::function<void (const char* msg, std::size_t len)>;
     // 刷缓存函数的函数类型
     using FlushFunc = std::function<void ()>;
     // 设置输出函数的入口，设置为静态成员方便共享

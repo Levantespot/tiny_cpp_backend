@@ -23,7 +23,7 @@ public:
     static const int kMicroSecondsPerSecond = 1000 * 1000;
 
     Timestamp () : microSecondsSinceEpoch_(0) {}
-    Timestamp (int64_t microSecondsSinceEpoch) : microSecondsSinceEpoch_(microSecondsSinceEpoch) {}
+    explicit Timestamp (int64_t microSecondsSinceEpoch) : microSecondsSinceEpoch_(microSecondsSinceEpoch) {}
 
     std::string toString() const;
     std::string toFormattedString(bool showMicroseconds = true) const;

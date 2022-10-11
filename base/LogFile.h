@@ -16,23 +16,23 @@ namespace TCB
 class LogFile : noncopyable
 {
 public:
-    explicit LogFile(const std::string& basename,
-            size_t rollSize,
+    LogFile(const std::string& basename,
+            std::size_t rollSize,
             bool threadSafe = true,
             int flushInterval = 3,
             int checkEveryN = 1024);
     ~LogFile() = default;
-    void append(const char* logline, size_t len);
+    void append(const char* logline, std::size_t len);
     void flush();   // 刷缓存
     bool rollFile(); // 滚动日志文件
 
 private:
-    void append_unlocked(const char* logline, size_t len);
+    void append_unlocked(const char* logline, std::size_t len);
 
     static std::string createLogFileName(const std::string& basename, time_t now);
 
     const std::string basename_; // 日志文件名
-    const size_t rollSize_; // 日志大小的滚动阈值
+    const std::size_t rollSize_; // 日志大小的滚动阈值
     const int flushInterval_; // 刷缓存的最小间隔（秒）
     const int checkEveryN_; // 检查是否刷缓存或者滚动日志的次数阈值
 
