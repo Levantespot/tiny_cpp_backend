@@ -7,7 +7,7 @@
 #include <mutex>
 #include <memory> // unique_ptr
 #include <string>
-#include <time.h> // time_t
+#include <ctime> // std::time_t
 
 namespace TCB
 {   
@@ -29,7 +29,7 @@ public:
 private:
     void append_unlocked(const char* logline, std::size_t len);
 
-    static std::string createLogFileName(const std::string& basename, time_t now);
+    static std::string createLogFileName(const std::string& basename, std::time_t now);
 
     const std::string basename_; // 日志文件名
     const std::size_t rollSize_; // 日志大小的滚动阈值
@@ -39,9 +39,9 @@ private:
     int count_; // 当前的操作次数
 
     std::unique_ptr<std::mutex> mutex_;
-    time_t startOfPeriod_; // 最近一次刷缓存的时间（天，从 0 开始计数）
-    time_t lastRoll_; // 最近一次滚动日志的时间（秒）
-    time_t lastFlush_; // 最近一次刷缓存的时间（秒）
+    std::time_t startOfPeriod_; // 最近一次刷缓存的时间（天，从 0 开始计数）
+    std::time_t lastRoll_; // 最近一次滚动日志的时间（秒）
+    std::time_t lastFlush_; // 最近一次刷缓存的时间（秒）
     std::unique_ptr<FileUtil::AppendFile> file_;
 
     const static int kRollPerSeconds_ = 60*60*24;

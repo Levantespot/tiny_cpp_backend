@@ -29,7 +29,7 @@ void bench(const char* type)
 {
     TCB::Logger::setOutput(dummyOutput);
     // TCB::Logger::setFlush(std::bind(&TCB::LogFile::flush, g_logFile.get())); // 不用设置 Flush
-    TCB::Timestamp start(TCB::Timestamp::now());
+    TCB::Timestamp start;
     g_total = 0;
 
     int n = 5*1000*1000;
@@ -43,7 +43,7 @@ void bench(const char* type)
                 << (kLongLog ? longStr : empty)
                 << i;
     }
-    TCB::Timestamp end(TCB::Timestamp::now());
+    TCB::Timestamp end;
     double seconds = (end - start) / 1000000.0;
     printf("%12s: %f seconds, %ld bytes, %10.2f msg/s, %.2f MiB/s\n",
             type, seconds, g_total, n / seconds, g_total / seconds / (1024 * 1024));
@@ -55,7 +55,7 @@ void bench(const char* type)
 
 //     timer.tik();
 //     for (int i = 0; i < N; i++) {
-//         TCB::Timestamp tmp(TCB::Timestamp::now());
+//         TCB::Timestamp tmp;
 //     }
 //     timer.tok();
 //     elapses.push_back(timer.elapse());
@@ -75,7 +75,7 @@ void bench(const char* type)
 //     timer.tok();
 //     elapses.push_back(timer.elapse());
 
-//     TCB::Timestamp time_(TCB::Timestamp::now());
+//     TCB::Timestamp time_;
 //     timer.tik();
 //     for (int i = 0; i < N; i++) {
 //         time_.toFormattedString();

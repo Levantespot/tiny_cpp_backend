@@ -32,7 +32,7 @@ const char* LogLevelName[Logger::NUM_LOG_LEVELS] =
     "FATAL ",
 };
 Logger::Impl::Impl(LogLevel level, int savedErrno, const SourceFile& file, int line) 
-  : time_(Timestamp::now()),
+  : time_(Timestamp()),
     stream_(),
     level_(level),
     line_(line),

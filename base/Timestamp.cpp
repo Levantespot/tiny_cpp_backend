@@ -6,10 +6,16 @@ namespace TCB
 constexpr int time_buffer_size = 64;
 thread_local char t_time[time_buffer_size];
 thread_local char t_micro[time_buffer_size];
-thread_local time_t t_lastSecond = 0;
-// thread_local time_t t_lastSecondCompact = 0;
+thread_local std::time_t t_lastSecond = 0;
 
 // -------------- Timestamp Starts --------------
+
+Timestamp::Timestamp() : microSecondsSinceEpoch_(0) {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    microSecondsSinceEpoch_ = tv.tv_sec * kMicroSecondsPerSecond + tv.tv_usec;
+    // microSecondsSinceEpoch_ = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
 
 std::string Timestamp::toString() const
 {
@@ -21,7 +27,7 @@ std::string Timestamp::toString() const
 }
 std::string Timestamp::toFormattedString(bool showMicroseconds) const
 {
-    time_t seconds = secondsSinceEpoch();
+    std::time_t seconds = secondsSinceEpoch();
 
     if (seconds != t_lastSecond) {
         t_lastSecond = seconds;
@@ -37,13 +43,6 @@ std::string Timestamp::toFormattedString(bool showMicroseconds) const
     }
 
     return (showMicroseconds) ? std::string(t_time) + std::string(t_micro) : std::string(t_time);
-}
-
-Timestamp Timestamp::now()
-{
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  return Timestamp(tv.tv_sec * kMicroSecondsPerSecond + tv.tv_usec);
 }
 // -------------- Timestamp Ends --------------
 

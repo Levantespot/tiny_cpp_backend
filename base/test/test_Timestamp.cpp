@@ -5,10 +5,10 @@
 
 int main() {
     TCB::Timestamp ts1;
-    TCB::Timestamp ts2(10005000);
-    TCB::Timestamp ts3(TCB::Timestamp::now());
+    TCB::Timestamp ts2;
+    TCB::Timestamp ts3;
     usleep(5000);
-    TCB::Timestamp ts4(TCB::Timestamp::now());
+    TCB::Timestamp ts4;
 
     std::cout << ts1.toString() << std::endl;
     std::cout << ts2.toString() << std::endl;

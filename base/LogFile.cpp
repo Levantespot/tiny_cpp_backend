@@ -42,8 +42,8 @@ void LogFile::append_unlocked(const char* logline, std::size_t len) {
         ++count_;
         if (count_ >= checkEveryN_) { // 达到检查的条件
             count_ = 0;
-            time_t now = time(nullptr);
-            time_t thisPeriod = now / kRollPerSeconds_ * kRollPerSeconds_;
+            std::time_t now = time(nullptr);
+            std::time_t thisPeriod = now / kRollPerSeconds_ * kRollPerSeconds_;
             if (thisPeriod != startOfPeriod_) {
                 // 过了一天了，滚动日志
                 rollFile();
@@ -68,11 +68,11 @@ void LogFile::flush() {
 
 // 关闭文件 -> 新建新的文件 -> 更新状态（成员变量）
 bool LogFile::rollFile() {
-    time_t now = time(nullptr);
+    std::time_t now = time(nullptr);
 
     if (now > lastRoll_) {
         std::string filename = createLogFileName(basename_, now);
-        time_t startPeriod = now / kRollPerSeconds_ * kRollPerSeconds_;
+        std::time_t startPeriod = now / kRollPerSeconds_ * kRollPerSeconds_;
         // 关闭文件 + 新建新的文件
         file_.reset(new FileUtil::AppendFile(filename.c_str()));
         // 更新状态
@@ -85,7 +85,7 @@ bool LogFile::rollFile() {
     return false;
 }
 
-std::string LogFile::createLogFileName(const std::string& basename, time_t now) {
+std::string LogFile::createLogFileName(const std::string& basename, std::time_t now) {
     std::string filename;
     filename.reserve(basename.size() + 32);
     filename = basename;
