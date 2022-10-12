@@ -16,11 +16,11 @@ int main() {
     // 适配函数
     std::function<void (const char*, std::size_t)> append2file = \
         std::bind(&TCB::LogFile::append, &log_file, std::placeholders::_1, std::placeholders::_2);
-    std::function<void ()> flush2file = std::bind(&TCB::LogFile::flush, &log_file);
+    // std::function<void ()> flush2file = std::bind(&TCB::LogFile::flush, &log_file);
     
     // 绑定函数
     TCB::Logger::setOutput(append2file);
-    TCB::Logger::setFlush(flush2file);
+    // TCB::Logger::setFlush(flush2file);
 
     LOG_INFO << "1" ;
     wait(); 

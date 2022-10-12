@@ -3,6 +3,7 @@
 
 #include "LogStream.h"
 #include "Timestamp.h"
+#include "CurrentThread.h"
 #include <thread> // this_thread::get_id
 #include <string>
 #include <cstring> // strerror

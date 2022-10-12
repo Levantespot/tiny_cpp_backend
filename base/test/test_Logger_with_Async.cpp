@@ -9,7 +9,7 @@ int main() {
     // 后端
     TCB::AsyncLogging alog("logfile", 2 * TCB::kLargeBuffer);
     TCB::Logger::setOutput(std::bind(&TCB::AsyncLogging::append, &alog, std::placeholders::_1, std::placeholders::_2));
-    TCB::Logger::setFlush(std::bind(&TCB::AsyncLogging::flush, &alog));
+    // TCB::Logger::setFlush(std::bind(&TCB::AsyncLogging::flush, &alog));
 
     LOG_INFO << "Hello" ;
     sleep(1);
