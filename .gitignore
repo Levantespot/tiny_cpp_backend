@@ -37,3 +37,4 @@ test/*
 
 # Build foloders
 base/test/build/*
+build/*

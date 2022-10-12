@@ -55,10 +55,9 @@ public:
             }
         }
         explicit SourceFile(const char* filename);
-        SourceFile(const SourceFile &) = default;
         
         inline const char* get_data() const { return data_; }
-        inline const std::size_t size() const { return size_; }
+        inline std::size_t size() const { return size_; }
     }; // class Source File
 private:
     // 封装格式化日志信息的类

@@ -32,7 +32,7 @@ namespace TCB
         return t_tidString;
     }
 
-    inline const std::size_t tidLength() {
+    inline std::size_t tidLength() {
         if (t_cachedTid == 0) {
             cacheTid();
         }

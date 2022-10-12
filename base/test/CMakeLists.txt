@@ -1,0 +1,29 @@
+add_executable(bench_Logger_with_Async bench_Logger_with_Async.cpp)
+target_link_libraries(bench_Logger_with_Async tcb_base)
+
+add_executable(bench_Logger_with_LogFile bench_Logger_with_LogFile.cpp)
+target_link_libraries(bench_Logger_with_LogFile tcb_base)
+
+add_executable(test_AsyncLogging test_AsyncLogging.cpp)
+target_link_libraries(test_AsyncLogging tcb_base)
+
+add_executable(test_FileUtil test_FileUtil.cpp)
+target_link_libraries(test_FileUtil tcb_base)
+
+add_executable(test_LogStream test_LogStream.cpp)
+target_link_libraries(test_LogStream tcb_base)
+
+add_executable(test_Logger test_Logger.cpp)
+target_link_libraries(test_Logger tcb_base)
+
+add_executable(test_Logger_with_Async test_Logger_with_Async.cpp)
+target_link_libraries(test_Logger_with_Async tcb_base)
+
+add_executable(test_Logger_with_FileUtil test_Logger_with_FileUtil.cpp)
+target_link_libraries(test_Logger_with_FileUtil tcb_base)
+
+add_executable(test_Logger_with_LogFile test_Logger_with_LogFile.cpp)
+target_link_libraries(test_Logger_with_LogFile tcb_base)
+
+add_executable(test_Timestamp test_Timestamp.cpp)
+target_link_libraries(test_Timestamp tcb_base)
