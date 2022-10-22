@@ -13,7 +13,7 @@ namespace TCB
     extern thread_local std::size_t t_tidLength;
 
     void inline cacheTid() {
-        t_cachedTid = getpid();
+        t_cachedTid = gettid();
         t_tidLength = snprintf(t_tidString, 32, "%d", t_cachedTid);
     }
 
