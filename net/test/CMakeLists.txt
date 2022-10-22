@@ -1,0 +1,2 @@
+add_executable(test_EventLoop test_EventLoop.cpp)
+target_link_libraries(test_EventLoop tcb_net)

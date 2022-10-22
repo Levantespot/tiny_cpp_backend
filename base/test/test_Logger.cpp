@@ -6,5 +6,7 @@ int main() {
 
     LOG_ERROR << "My name is Lee";
 
+    LOG_FATAL << "This will raise an abort" ;
+
     return 0;
 }
