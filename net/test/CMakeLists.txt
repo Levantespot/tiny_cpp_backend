@@ -6,3 +6,6 @@ target_link_libraries(test_Channel tcb_net)
 
 add_executable(test_timerfd test_timerfd.cpp)
 target_link_libraries(test_timerfd tcb_net)
+
+add_executable(test_pendingFunctors test_pendingFunctors.cpp)
+target_link_libraries(test_pendingFunctors tcb_net)

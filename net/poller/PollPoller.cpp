@@ -51,8 +51,8 @@ void PollPoller::fillActiveChannels(int numEvents, ChannelList& activeChannels) 
 void PollPoller::updateChannel(Channel* channel) {
     Poller::assertInLoopThread();
     LOG_TRACE << "fd = " << channel->fd() << " events = " << channel->events();
-    assert(channelMaps_.find(channel->fd()) == channelMaps_.end());
     if (channel->index() < 0) {
+        assert(channelMaps_.find(channel->fd()) == channelMaps_.end());
         // create & insert `struct pollfd`
         struct pollfd pfd;
         pfd.fd = channel->fd();
