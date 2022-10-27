@@ -29,7 +29,10 @@ public:
     std::string toCompactFormattedString(bool showMicroseconds = false) const;
     inline bool valid() const { return microSecondsSinceEpoch_ > 0; }
 
+    inline void addSeconds(double seconds) { microSecondsSinceEpoch_ += static_cast<int64_t>(seconds * kMicroSecondsPerSecond); }
+
     // only for internal usage
+
     inline int64_t microSecondsSinceEpoch() const { return microSecondsSinceEpoch_; }
     inline int64_t secondsSinceEpoch() const { return microSecondsSinceEpoch_ / kMicroSecondsPerSecond;}
 };

@@ -1,6 +1,7 @@
-#include "EventLoop.h"
 #include "../base/Logger.h"
+#include "EventLoop.h"
 #include "Poller.h"
+#include "Channel.h"
 
 namespace TCB
 {
@@ -8,9 +9,11 @@ namespace net
 {
 
 thread_local EventLoop* t_loopInThisThread = nullptr;
+const int kPollTimeMs = 10000;
 
 EventLoop::EventLoop()
   : looping_(false),
+    quit_(false),
     threadId_(CurrentThread::tid()),
     activeChannels_(),
     currentActiveChannel_(nullptr),
@@ -37,10 +40,16 @@ void EventLoop::loop() {
                   << " in thread " << threadId_ << " is already looping!";
     } else {
         looping_ = true;
+        quit_ = false;
         LOG_TRACE << "EventLoop " << this << " starts looping";
-
-        // do some work
-        LOG_INFO << "looping~" ; // test for test_EventLoop.cpp
+        
+        while (!quit_) {
+            activeChannels_.clear();
+            poller_->poll(kPollTimeMs, activeChannels_);
+            for (auto &it : activeChannels_) {
+                it->handleEvent();
+            }
+        }
 
         LOG_TRACE << "EventLoop " << this << " stops looping";
         looping_ = false;

@@ -21,7 +21,7 @@ class EventLoop;
 class Channel
 {
 public:
-    using EventCallBack = std::function<void ()>;
+    using EventCallback = std::function<void ()>;
 
     Channel(EventLoop *loop, int fd);
     ~Channel(); // TODO
@@ -30,10 +30,16 @@ public:
 
     inline int fd() const { return fd_; }
     inline int events() const { return events_; }
-    // inline int revents() const { return revents_; }
-    inline void set_revents(int revents) { revents_ = revents; }
+    inline void set_revents(int revents) { revents_ = revents; } // for internal use only
+
+    // for Poller
+
     inline int index() const { return index_; }
     inline void set_index(int index) { index_ = index; }
+
+    // for debug
+    std::string reventsToString() const;
+    std::string eventsToString() const;
 
     // 设置监听的事件 (可读 or 可写)
 
@@ -51,13 +57,16 @@ public:
 
     // 设置回调函数
 
-    inline void setReadCallBack(const EventCallBack &cb) noexcept { readCallBack = cb; }
-    inline void setWriteCallBack(const EventCallBack &cb) noexcept { writeCallBack = cb; }
-    inline void setErrorCallBack(const EventCallBack &cb) noexcept { errorCallBack = cb; }
+    inline void setReadCallBack(EventCallback cb) noexcept { readCallback_ = std::move(cb); }
+    inline void setWriteCallBack(EventCallback cb) noexcept { writeCallback_ = std::move(cb); }
+    inline void setCloseCallBack(EventCallback cb) noexcept { closeCallback_ = std::move(cb); }
+    inline void setErrorCallBack(EventCallback cb) noexcept { errorCallback_ = std::move(cb); }
+    void handleEvent(); // 根据具体的事件调用对应函数回调函数 TODO
     
 
 private:
-    inline void update();
+    inline void update();  // 更新 poller 中的 map<int, channel> TODO
+    static std::string eventsToString(int fd, int ev); // why static?
 
     EventLoop *loop_; // 绑定的 EventLoop
     const int fd_;  // 文件描述符
@@ -65,9 +74,10 @@ private:
     int revents_;   // 实际发生的事件
     int index_;     // 记录自己在 pollfds_ 中的索引, -1 表示未记录，方便定位和删除
 
-    EventCallBack readCallBack;
-    EventCallBack writeCallBack;
-    EventCallBack errorCallBack;
+    EventCallback readCallback_;
+    EventCallback writeCallback_;
+    EventCallback closeCallback_;
+    EventCallback errorCallback_;
 
     static const int kNoneEvent;
     static const int kReadEvent;

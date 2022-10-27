@@ -77,8 +77,8 @@ Logger::~Logger() {
     impl_.finish();
     const LogStream::Buffer &buf = stream().get_buffer();
     g_output(buf.get_data(), buf.size());
-    if (impl_.level_ == FATAL)
-    {
+    if (impl_.level_ == FATAL) {
+        // flush only if FATAL
         g_flush();
         abort();
     }
