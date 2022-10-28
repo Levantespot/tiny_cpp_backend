@@ -149,9 +149,11 @@ LogFile *-- AppendFile
 ```
 
 网络库 TODO
-- [ ] Channel: 负责注册和响应 IO 事件（对 struct pollfd 和各类事件处理方法的封装），一个 Channel 与 EventLoop 一对一绑定，
-- [ ] EventLoop: 线程事件循环器，负责 IO 和定时器任务的分派；
+- [x] Channel: 负责注册和响应 IO 事件（对 struct pollfd 和各类事件处理方法的封装），一个 Channel 与 EventLoop 一对一绑定，
+- [x] EventLoop: 线程事件循环器，负责 IO 和定时器任务的分派；
 - [x] Poller: 负责 I/O 复用的抽象基类；
   - [x] PollPoller
   - [ ] EpollPoller
+- [x] EventLoopThread: 方便主线程创建、管理多个 EventLoop
+- [ ] 
 
