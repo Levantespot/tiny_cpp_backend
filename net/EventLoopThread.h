@@ -29,8 +29,7 @@ private:
 
     bool started;
     EventLoop* loop_;
-    std::mutex mutex_loop_;
-    std::mutex mutex_cond_;
+    std::mutex mutex_;
     std::condition_variable cond_;
     ThreadInitCallback callback_;
     std::unique_ptr<std::thread> ptrThread_;

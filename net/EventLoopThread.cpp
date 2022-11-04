@@ -12,8 +12,7 @@ namespace net
 EventLoopThread::EventLoopThread(const ThreadInitCallback& cb) 
   : started(false),
     loop_(nullptr),
-    mutex_loop_(),
-    mutex_cond_(),
+    mutex_(),
     cond_(),
     callback_(cb),
     ptrThread_(nullptr)
@@ -39,8 +38,7 @@ EventLoop* EventLoopThread::startLoop() {
             std::bind(&EventLoopThread::threadFunc, this)));
 
         {
-            // std::unique_lock<std::mutex> ulk(mutex_cond_);
-            std::unique_lock<std::mutex> ulk(mutex_loop_);
+            std::unique_lock<std::mutex> ulk(mutex_);
             cond_.wait(ulk, [this] () { return loop_ != nullptr; });
             ptr_loop = loop_;
         }        
@@ -60,7 +58,7 @@ void EventLoopThread::threadFunc() {
     }
 
     {
-        std::lock_guard<std::mutex> lc(mutex_loop_);
+        std::lock_guard<std::mutex> lc(mutex_);
         loop_ = &loop;
         cond_.notify_one();
     }
@@ -68,7 +66,7 @@ void EventLoopThread::threadFunc() {
     loop.loop();
 
     {
-        std::lock_guard<std::mutex> lk(mutex_loop_);
+        std::lock_guard<std::mutex> lk(mutex_);
         loop_ = nullptr;
     }
 }
