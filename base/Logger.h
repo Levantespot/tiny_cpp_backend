@@ -1,110 +1,106 @@
 #ifndef TCB_BASE_LOGGING_H
 #define TCB_BASE_LOGGING_H
 
+#include <cstdlib>  // abort
+#include <cstring>  // strerror
+#include <functional>
+#include <string>
+#include <thread>  // this_thread::get_id
+
 #include "LogStream.h"
 #include "Timestamp.h"
-#include "CurrentThread.h"
-#include <thread> // this_thread::get_id
-#include <string>
-#include <cstring> // strerror
-#include <cstdlib> // abort
-#include <functional>
-namespace TCB
-{
+namespace TCB {
 
-class Logger
-{   
-/* ------- 日志等级 -------*/
-public:
-    enum LogLevel {
-        TRACE,
-        DEBUG,
-        INFO,
-        WARN,
-        ERROR,
-        FATAL,
-        NUM_LOG_LEVELS,
-    };
-    // 返回日志等级
-    static LogLevel logLevel();
-    // 设置日志等级
-    static void set_logLevel(LogLevel level);
-private:
-    static LogLevel g_logLevel;
+class Logger {
+  /* ------- 日志等级 -------*/
+ public:
+  enum LogLevel {
+    TRACE,
+    DEBUG,
+    INFO,
+    WARN,
+    ERROR,
+    FATAL,
+    NUM_LOG_LEVELS,
+  };
+  // 返回日志等级
+  static LogLevel logLevel();
+  // 设置日志等级
+  static void set_logLevel(LogLevel level);
 
-/* ------- 辅助类 -------*/
-public:
-    // 构造时输入文件路径，去除路径，得到文件名
-    class SourceFile
-    {
-    private:
-        const char* data_;
-        std::size_t size_;
-    public:
-        template<int N>
-        SourceFile(const char (&arr)[N]) // implicit
-          : data_(arr),
-            size_(N-1)
-        {   
+ private:
+  static LogLevel g_logLevel;
 
-            const char* slash = strrchr(data_, '/'); // builtin function
-            if (slash)
-            {
-                data_ = slash + 1;
-                size_ -= static_cast<int>(data_ - arr);
-            }
-        }
-        explicit SourceFile(const char* filename);
-        
-        inline const char* get_data() const { return data_; }
-        inline std::size_t size() const { return size_; }
-    }; // class Source File
-private:
-    // 封装格式化日志信息的类
-    class Impl : noncopyable
-    {
-    public:
-        // 构造的同时，写入事件、线程id、日志级别，错误信息（如果有的话）。
-        Impl(LogLevel level, int savedErrno, const SourceFile& file, int line);
-        // 最后写入文件名和行号
-        void finish(); 
+  /* ------- 辅助类 -------*/
+ public:
+  // 构造时输入文件路径，去除路径，得到文件名
+  class SourceFile {
+   private:
+    const char* data_;
+    std::size_t size_;
 
-        Timestamp time_;
-        LogStream stream_;
-        LogLevel level_;
-        int line_;
-        SourceFile basename_;
-    };
-    Impl impl_;
-public:
-    // Internal usage only!
-    inline LogStream& stream() { return impl_.stream_; }
+   public:
+    template <int N>
+    SourceFile(const char (&arr)[N])  // implicit
+        : data_(arr), size_(N - 1) {
+      const char* slash = strrchr(data_, '/');  // builtin function
+      if (slash) {
+        data_ = slash + 1;
+        size_ -= static_cast<int>(data_ - arr);
+      }
+    }
+    explicit SourceFile(const char* filename);
 
-/* ------- 构造析构 -------*/
-public:
-    Logger(SourceFile file, int line);
-    Logger(SourceFile file, int line, LogLevel level);
-    Logger(SourceFile file, int line, LogLevel level, const char* func);
-    Logger(SourceFile file, int line, bool toAbort);
-    // 析构的时候负责把所有信息按格式输出
-    ~Logger();
+    inline const char* get_data() const { return data_; }
+    inline std::size_t size() const { return size_; }
+  };  // class Source File
+ private:
+  // 封装格式化日志信息的类
+  class Impl : noncopyable {
+   public:
+    // 构造的同时，写入事件、线程id、日志级别，错误信息（如果有的话）。
+    Impl(LogLevel level, int savedErrno, const SourceFile& file, int line);
+    // 最后写入文件名和行号
+    void finish();
 
-/* ------- 输出 & 刷缓存 -------*/
-public:
-    // 输出函数的函数类型
+    Timestamp time_;
+    LogStream stream_;
+    LogLevel level_;
+    int line_;
+    SourceFile basename_;
+  };
+  Impl impl_;
 
-    using OutputFunc = std::function<void (const char* msg, std::size_t len)>;
-    // 刷缓存函数的函数类型
-    using FlushFunc = std::function<void ()>;
-    // 设置输出函数的入口，设置为静态成员方便共享
-    static void setOutput(OutputFunc);
-    // 设置刷缓存函数的入口，设置为静态成员方便共享
-    static void setFlush(FlushFunc);
-private:
-    static OutputFunc g_output;
-    static FlushFunc g_flush;
-    
-}; // class Logger
+ public:
+  // Internal usage only!
+  inline LogStream& stream() { return impl_.stream_; }
+
+  /* ------- 构造析构 -------*/
+ public:
+  Logger(SourceFile file, int line);
+  Logger(SourceFile file, int line, LogLevel level);
+  Logger(SourceFile file, int line, LogLevel level, const char* func);
+  Logger(SourceFile file, int line, bool toAbort);
+  // 析构的时候负责把所有信息按格式输出
+  ~Logger();
+
+  /* ------- 输出 & 刷缓存 -------*/
+ public:
+  // 输出函数的函数类型
+
+  using OutputFunc = std::function<void(const char* msg, std::size_t len)>;
+  // 刷缓存函数的函数类型
+  using FlushFunc = std::function<void()>;
+  // 设置输出函数的入口，设置为静态成员方便共享
+  static void setOutput(OutputFunc);
+  // 设置刷缓存函数的入口，设置为静态成员方便共享
+  static void setFlush(FlushFunc);
+
+ private:
+  static OutputFunc g_output;
+  static FlushFunc g_flush;
+
+};  // class Logger
 
 // 给 LogStream 增加一个写入 SourceFile 类型的操作
 LogStream& operator<<(LogStream& s, const Logger::SourceFile& v);
@@ -113,14 +109,16 @@ LogStream& operator<<(LogStream& s, const Logger::SourceFile& v);
 // LOG_TRACE, LOG_DEBUG, LOG_INFO 受日志等级控制，低于日志等级的日志会被忽略
 
 // 开发日志
-#define LOG_TRACE if (TCB::Logger::logLevel() <= TCB::Logger::TRACE) \
-    TCB::Logger(__FILE__, __LINE__, TCB::Logger::TRACE, __func__).stream()
+#define LOG_TRACE                                    \
+  if (TCB::Logger::logLevel() <= TCB::Logger::TRACE) \
+  TCB::Logger(__FILE__, __LINE__, TCB::Logger::TRACE, __func__).stream()
 // 调试日志
-#define LOG_DEBUG if (TCB::Logger::logLevel() <= TCB::Logger::DEBUG) \
-    TCB::Logger(__FILE__, __LINE__, TCB::Logger::DEBUG, __func__).stream()
+#define LOG_DEBUG                                    \
+  if (TCB::Logger::logLevel() <= TCB::Logger::DEBUG) \
+  TCB::Logger(__FILE__, __LINE__, TCB::Logger::DEBUG, __func__).stream()
 // 运行日志
-#define LOG_INFO if (TCB::Logger::logLevel() <= TCB::Logger::INFO) \
-    TCB::Logger(__FILE__, __LINE__).stream()
+#define LOG_INFO \
+  if (TCB::Logger::logLevel() <= TCB::Logger::INFO) TCB::Logger(__FILE__, __LINE__).stream()
 // 警告日志
 #define LOG_WARN TCB::Logger(__FILE__, __LINE__, TCB::Logger::WARN).stream()
 // 错误日志（继续运行）
@@ -132,6 +130,6 @@ LogStream& operator<<(LogStream& s, const Logger::SourceFile& v);
 // 错误日志，并输出 errono（强行退出）
 #define LOG_SYSFATAL TCB::Logger(__FILE__, __LINE__, true).stream()
 
-} // namespace TCB
+}  // namespace TCB
 
-#endif // TCB_BASE_LOGGING_H
+#endif  // TCB_BASE_LOGGING_H

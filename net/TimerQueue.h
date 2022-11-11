@@ -2,25 +2,22 @@
 #define TCB_NET_TIMERQUEUE_H
 
 #include <queue>
-#include "Channel.h"
-#include "../base/Timestamp.h"
 
-namespace TCB
-{
-namespace net
-{
+#include "../base/Timestamp.h"
+#include "Channel.h"
+
+namespace TCB {
+namespace net {
 
 class EventLoop;
 
-class TimerQueue : noncopyable
-{
-public:
-    explicit TimerQueue(EventLoop* loop);
-    ~TimerQueue();
-
+class TimerQueue : noncopyable {
+ public:
+  explicit TimerQueue(EventLoop* loop);
+  ~TimerQueue();
 };
 
-} // namespace net
-} // namespace TCB
+}  // namespace net
+}  // namespace TCB
 
 #endif

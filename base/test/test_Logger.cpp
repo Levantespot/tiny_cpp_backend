@@ -1,12 +1,13 @@
-#include "../Logger.h"
 #include <iostream>
 
+#include "base/Logger.h"
+
 int main() {
-    LOG_INFO << "Hello, world";
+  LOG_INFO << "Hello, world";
 
-    LOG_ERROR << "My name is Lee";
+  LOG_ERROR << "My name is Lee";
 
-    LOG_FATAL << "This will raise an abort" ;
+  LOG_FATAL << "This will raise an abort";
 
-    return 0;
+  return 0;
 }
