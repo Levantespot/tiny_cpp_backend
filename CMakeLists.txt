@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_definitions("-Wall -Wextra -g -O2")
 
+include_directories("/home/lee/tiny_cpp_backend")
+
 # add sub_dir for other CMakeLists
 add_subdirectory(base)
 add_subdirectory(net)

@@ -1,3 +1,5 @@
+include_directories(${PROJECT_SOURCE_DIR})
+
 aux_source_directory(. TCB_NET_BASE_FILES)
 
 set(TCB_NET_FILES
@@ -6,7 +8,7 @@ set(TCB_NET_FILES
     poller/PollPoller.cpp
 )
 
-add_library(tcb_net STATIC ${TCB_NET_FILES})
+add_library(tcb_net SHARED ${TCB_NET_FILES})
 target_link_libraries(tcb_net tcb_base pthread)
 
 add_subdirectory(test)
