@@ -9,3 +9,6 @@ target_link_libraries(test_pendingFunctors tcb_net)
 
 add_executable(test_EventLoopThread test_EventLoopThread.cpp)
 target_link_libraries(test_EventLoopThread tcb_net)
+
+add_executable(test_InetAddress test_InetAddress.cpp)
+target_link_libraries(test_InetAddress tcb_net)
